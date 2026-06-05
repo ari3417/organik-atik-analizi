@@ -52,12 +52,7 @@ with tab1:
                 sinif_id = int(box.cls[0])
                 sinif_adi = model.names[sinif_id]
                 
-                # Domates/Elma Hack'i
-                if sinif_adi == 'domates':
-                    sinif_adi = 'elma'
-                elif sinif_adi == 'elma':
-                    sinif_adi = 'domates'
-                
+
                 if sinif_adi == BOZUK_ETIKETI:
                     toplam_bozuk_alan += alan
                 else:
