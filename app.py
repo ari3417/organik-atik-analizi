@@ -392,7 +392,21 @@ with tab1:
                         </ul>
                     </div>
                     """, unsafe_allow_html=True)
-                    
+
+                # KOMPOST POTANSİYELİ HESAPLAYICI (TARİFLERİN ALTINA EKLENDİ)
+                if bozukluk_orani > 0:
+                    tahmini_atik_gr = int((bozukluk_orani / 100) * 150) # 150 gram ortalama meyve varsayımı
+                    tahmini_gubre_gr = int(tahmini_atik_gr * 0.4) # Yaklaşık %40 kompost verimi
+                    if tahmini_atik_gr > 0:
+                        st.markdown(f"""
+                        <div style="background-color: #E8F5E9; border: 2px solid #4CAF50; padding: 20px; border-radius: 15px; margin-top: 20px; color: #2E7D32;">
+                            <h4 style="margin-top:0px; margin-bottom: 10px; color: #2E7D32;">🌱 Kesilen Çürükler İçin Kompost Potansiyeli</h4>
+                            <span style="font-size: 16px; line-height: 1.6;">
+                                Yukarıdaki tarifleri uygularken kestiğiniz <b>%{bozukluk_orani:.1f}</b>'lik hasarlı kısım (ortalama bir porsiyon meyvede yaklaşık <b>{tahmini_atik_gr} gram</b> organik atığa denk gelir) çöpe gitmek yerine kompost kutunuza eklendiğinde, bitkileriniz için <b>~{tahmini_gubre_gr} gram</b> besin değeri yüksek, saf organik gübreye (humus) dönüşecektir. Lütfen bu kısımları çöpe değil, toprağa kazandırın!
+                            </span>
+                        </div>
+                        """, unsafe_allow_html=True)
+
             elif bozukluk_orani <= 80.0:
                 st.error("**Kategori: Kompost (Organik Gübre)**")
                 st.write(f"Bu {urun_ismi.lower()} tüketim limitlerini aşmış durumda. Lütfen 'Kompost Modu' sekmesine geçerek bu ürünü toprağa nasıl geri kazandıracağınızı öğrenin.")
@@ -541,22 +555,37 @@ with tab2:
 with tab3:
     st.markdown("<br>", unsafe_allow_html=True)
     st.header("Learn & Coach")
-    st.markdown("Gönüllü eğitim rehberi ve döngüsel ekonomi bilgi bankası.")
+    st.markdown("Gönüllü eğitim rehberi ve döngüsel ekonomi bilgi bankası.<br><br>", unsafe_allow_html=True)
     
     st.markdown("""
-    ### ♻️ Neden Ayrıştırıyoruz?
-    Gıda atıkları çöpe gidip oksijensiz ortamda çürüdüklerinde, karbondioksitten 25 kat daha zararlı olan metan gazı üretirler. Amacımız, gıdayı atık olmadan yakalamaktır.
+    <div class="recipe-card bg-mint">
+        <div class="recipe-title">♻️ Neden Ayrıştırıyoruz?</div>
+        <div class="ingredient-list">
+        Gıda atıkları çöpe gidip oksijensiz ortamda çürüdüklerinde, karbondioksitten 25 kat daha zararlı olan metan gazı üretirler. Amacımız, gıdayı atık olmadan yakalamaktır.
+        </div>
+    </div>
     
-    ### ⚖️ Altın Kural: Kompost Dengesi (C:N Oranı)
-    Sağlıklı bir kompost için **Karbon (Kahverengi) / Azot (Yeşil)** oranı çok önemlidir. 
-    Hacimsel olarak ortalama **%60 Kahverengi, %40 Yeşil** malzeme kuralını uygulayın.
+    <div class="recipe-card bg-blue">
+        <div class="recipe-title">⚖️ Altın Kural: Kompost Dengesi (C:N Oranı)</div>
+        <div class="ingredient-list">
+        Sağlıklı bir kompost için <b>Karbon (Kahverengi) / Azot (Yeşil)</b> oranı çok önemlidir.<br>
+        Hacimsel olarak ortalama <b>%60 Kahverengi, %40 Yeşil</b> malzeme kuralını uygulayın.<br><br>
+        <ul>
+            <li><b>🟢 Yeşiller (Nem ve Azot kaynağı):</b> Meyve sebze artıkları, taze çimen, kahve telvesi, çay yaprakları.</li>
+            <li><b>🟤 Kahverengiler (Hava ve Karbon kaynağı):</b> Kuru yapraklar, dal parçaları, tuvalet kağıdı ruloları, yumurta kartonları, talaş.</li>
+        </ul>
+        </div>
+    </div>
     
-    * **🟢 Yeşiller (Nem ve Azot kaynağı):** Meyve sebze artıkları, taze çimen, kahve telvesi, çay yaprakları.
-    * **🟤 Kahverengiler (Hava ve Karbon kaynağı):** Kuru yapraklar, dal parçaları, tuvalet kağıdı ruloları, yumurta kartonları, talaş.
-    
-    ### ❌ Komposta Asla Atılmaması Gerekenler
-    * Et, kemik ve balık ürünleri (Patojen ve haşere çeker).
-    * Süt ürünleri (Peynir, yoğurt).
-    * Yağlı ve soslu yemek artıkları.
-    * Kedi/Köpek dışkısı.
-    """)
+    <div class="recipe-card bg-pink">
+        <div class="recipe-title">❌ Komposta Asla Atılmaması Gerekenler</div>
+        <div class="ingredient-list">
+        <ul>
+            <li>Et, kemik ve balık ürünleri (Patojen ve haşere çeker).</li>
+            <li>Süt ürünleri (Peynir, yoğurt).</li>
+            <li>Yağlı ve soslu yemek artıkları.</li>
+            <li>Kedi/Köpek dışkısı.</li>
+        </ul>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
