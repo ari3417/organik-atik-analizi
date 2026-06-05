@@ -131,29 +131,29 @@ tab1, tab2, tab3 = st.tabs(["📸 Kurtarma Tarayıcısı", "🍂 Kompost Modu", 
 with tab1:
     st.markdown("<br><br>", unsafe_allow_html=True)
     
-    # Üst Panel: Sol Yazı/Buton, Sağ İki Sarı Kutu
-    col1, col2, col3 = st.columns([1.2, 1, 1], gap="small")
+    # Üst Panel: Tam genişlikte başlık ve yükleme alanı
+    st.markdown("""
+    <div style="font-family: 'Arial Black', sans-serif; font-size: 42px; color: #A8C9B4; line-height: 1; margin-bottom: 20px; letter-spacing: -1px; text-align: center;">
+        KURTARILACAK ÜRÜNÜ TARAYIN
+    </div>
+    """, unsafe_allow_html=True)
     
-    with col1:
-        st.markdown("""
-        <div style="font-family: 'Arial Black', sans-serif; font-size: 42px; color: #A8C9B4; line-height: 1; margin-bottom: 20px; letter-spacing: -1px;">
-            KURTARILACAK<br>ÜRÜNÜ TARAYIN
-        </div>
-        """, unsafe_allow_html=True)
-        
-        uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"], key="scanner", label_visibility="collapsed")
-        
-        st.markdown("""
-        <div style="font-size: 14px; color: #555; margin-top: 15px; line-height: 1.4;">
-            Yumuşamış veya hasar görmüş meyvenizin fotoğrafını yükleyin, sistem onu tanıp size özel harika bir sıfır atık tarifi sunsun.
-        </div>
-        """, unsafe_allow_html=True)
+    uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"], key="scanner", label_visibility="collapsed")
+    
+    st.markdown("""
+    <div style="font-size: 14px; color: #555; margin-top: 15px; margin-bottom: 30px; line-height: 1.4; text-align: center;">
+        Yumuşamış veya hasar görmüş meyvenizin fotoğrafını yükleyin, sistem onu tanıp size özel harika bir sıfır atık tarifi sunsun.
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Alt Panel: İki büyük sarı kutu
+    col1, col2 = st.columns(2, gap="large")
 
     # Görüntü Kutuları Yönetimi
     if uploaded_file is None:
-        with col2:
+        with col1:
             st.markdown('<div class="mustard-box">Seçilen fotoğraf</div>', unsafe_allow_html=True)
-        with col3:
+        with col2:
             st.markdown('<div class="mustard-box">AI Taraması</div>', unsafe_allow_html=True)
         
         st.markdown('<div class="action-banner">AKSİYON PLANI (HASAR ORANI: - )</div>', unsafe_allow_html=True)
@@ -188,14 +188,14 @@ with tab1:
             res_img = Image.fromarray(res_plotted)
             res_b64 = image_to_base64(res_img)
             
-            with col2:
+            with col1:
                 st.markdown(f'''
                 <div class="mustard-box">
                     <div style="margin-bottom:10px;">Seçilen fotoğraf</div>
                     <img src="data:image/png;base64,{img_b64}">
                 </div>
                 ''', unsafe_allow_html=True)
-            with col3:
+            with col2:
                 st.markdown(f'''
                 <div class="mustard-box">
                     <div style="margin-bottom:10px;">AI Taraması</div>
@@ -377,7 +377,7 @@ with tab1:
                         <div class="recipe-title">🥒 Sıfır Atık Detoks & Cilt Toniği</div>
                         <div class="ingredient-list">
                             <b>Malzemeler:</b><br>
-                            🥒 Pörsümüş salatalık og sap kısımları<br>
+                            🥒 Pörsümüş salatalık ve sap kısımları<br>
                             🍋 Yarım Limon<br>
                             🌿 Taze Nane<br>
                             💧 İçme Suyu
