@@ -6,7 +6,7 @@ import base64
 from io import BytesIO
 
 # 1. Sayfa Ayarları
-st.set_page_config(page_title="Rescue Scanner & Coach", page_icon="♻️", layout="centered")
+st.set_page_config(page_title="Gıda Kurtarma Tarayıcısı & Rehberi", page_icon="♻️", layout="centered")
 
 # Görselleri HTML içine gömebilmek için dönüştürücü fonksiyon
 def image_to_base64(img):
@@ -113,7 +113,7 @@ st.markdown("""
 if os.path.exists("logo.png"):
     st.image("logo.png", use_container_width=True)
 else:
-    st.title("🌱 RESCUE SCANNER & COACH")
+    st.title("🌱 GIDA KURTARMA TARAYICISI & REHBERİ")
 
 # Modeli yükleme
 @st.cache_resource
@@ -145,7 +145,7 @@ with tab1:
         
         st.markdown("""
         <div style="font-size: 14px; color: #555; margin-top: 15px; line-height: 1.4;">
-            Yumuşamış veya hasar görmüş meyvenizin fotoğrafını yükleyin, sistem onu tanıyıp size özel harika bir sıfır atık tarifi sunsun.
+            Yumuşamış veya hasar görmüş meyvenizin fotoğrafını yükleyin, sistem onu tanıp size özel harika bir sıfır atık tarifi sunsun.
         </div>
         """, unsafe_allow_html=True)
 
@@ -377,7 +377,7 @@ with tab1:
                         <div class="recipe-title">🥒 Sıfır Atık Detoks & Cilt Toniği</div>
                         <div class="ingredient-list">
                             <b>Malzemeler:</b><br>
-                            🥒 Pörsümüş salatalık ve sap kısımları<br>
+                            🥒 Pörsümüş salatalık og sap kısımları<br>
                             🍋 Yarım Limon<br>
                             🌿 Taze Nane<br>
                             💧 İçme Suyu
@@ -393,10 +393,10 @@ with tab1:
                     </div>
                     """, unsafe_allow_html=True)
 
-                # KOMPOST POTANSİYELİ HESAPLAYICI (TARİFLERİN ALTINA EKLENDİ)
+                # KOMPOST POTANSİYELİ HESAPLAYICI
                 if bozukluk_orani > 0:
-                    tahmini_atik_gr = int((bozukluk_orani / 100) * 150) # 150 gram ortalama meyve varsayımı
-                    tahmini_gubre_gr = int(tahmini_atik_gr * 0.4) # Yaklaşık %40 kompost verimi
+                    tahmini_atik_gr = int((bozukluk_orani / 100) * 150) 
+                    tahmini_gubre_gr = int(tahmini_atik_gr * 0.4) 
                     if tahmini_atik_gr > 0:
                         st.markdown(f"""
                         <div style="background-color: #E8F5E9; border: 2px solid #4CAF50; padding: 20px; border-radius: 15px; margin-top: 20px; color: #2E7D32;">
@@ -531,7 +531,7 @@ with tab1:
 # ==========================================
 with tab2:
     st.markdown("<br>", unsafe_allow_html=True)
-    st.header("Evaluate & Redirect (Kompost Modu)")
+    st.header("Değerlendir & Yönlendir (Kompost Modu)")
     st.markdown("Kompost dengenizi kontrol edin ve organik atıklarınızın olgunlaşma durumunu analiz edin.")
     
     atilan_malzeme = st.selectbox("Komposta eklenecek ağırlıklı malzeme türü nedir?", ["Meyve/Sebze Kabukları (Yeşil - Azot)", "Kuru Yaprak/Karton (Kahverengi - Karbon)", "Kahve Telvesi (Yeşil - Azot)"])
@@ -554,38 +554,52 @@ with tab2:
 # ==========================================
 with tab3:
     st.markdown("<br>", unsafe_allow_html=True)
-    st.header("Learn & Coach")
-    st.markdown("Gönüllü eğitim rehberi ve döngüsel ekonomi bilgi bankası.<br><br>", unsafe_allow_html=True)
+    st.header("Öğren & Rehberlik Et (Eğitim Desteği)")
+    st.markdown("Gönüllü eğitim rehberi, sıfır atık pratikleri ve döngüsel ekonomi bilgi bankası.<br><br>", unsafe_allow_html=True)
     
     st.markdown("""
     <div class="recipe-card bg-mint">
-        <div class="recipe-title">♻️ Neden Ayrıştırıyoruz?</div>
+        <div class="recipe-title">♻️ Sıfır Atık Felsefesi ve Ayrıştırmanın Önemi</div>
         <div class="ingredient-list">
-        Gıda atıkları çöpe gidip oksijensiz ortamda çürüdüklerinde, karbondioksitten 25 kat daha zararlı olan metan gazı üretirler. Amacımız, gıdayı atık olmadan yakalamaktır.
+        <b>Neden Gıdayı Çöpe Atmamalıyız?</b><br>
+        Dünyada üretilen gıdaların yaklaşık üçte biri tüketilmeden atık haline gelmektedir. Gıda atıkları çöpe gidip katı atık depolama sahalarında oksijensiz ortamda çürüdüklerinde, karbondioksitten 25 kat daha zararlı olan <b>metan gazı (CH₄)</b> üretirler. Gıda kaybı, küresel sera gazı emisyonlarının yaklaşık %8-10'undan sorumludur.<br><br>
+        <b>Döngüsel Ekonomi Yaklaşımı:</b><br>
+        Geleneksel "Al-Kullan-At" (Doğrusal) modeli yerine, gıdayı sistem içinde tutan "Azalt-Yeniden Kullan-Dönüştür" (Döngüsel) modelini benimsiyoruz. Amacımız gıdayı henüz atık haline gelmeden yakalamak ve kentsel karbon ayak izini azaltmaktır.
         </div>
     </div>
     
     <div class="recipe-card bg-blue">
         <div class="recipe-title">⚖️ Altın Kural: Kompost Dengesi (C:N Oranı)</div>
         <div class="ingredient-list">
-        Sağlıklı bir kompost için <b>Karbon (Kahverengi) / Azot (Yeşil)</b> oranı çok önemlidir.<br>
-        Hacimsel olarak ortalama <b>%60 Kahverengi, %40 Yeşil</b> malzeme kuralını uygulayın.<br><br>
+        Sağlıklı ve kokusuz bir kompost üretimi için <b>Karbon (Kahverengi atıklar) / Azot (Yeşil atıklar)</b> dengesi hayati önem taşır. İdeal hacimsel oran <b>%60 Kahverengi, %40 Yeşil</b> malzemedir.<br><br>
         <ul>
-            <li><b>🟢 Yeşiller (Nem ve Azot kaynağı):</b> Meyve sebze artıkları, taze çimen, kahve telvesi, çay yaprakları.</li>
-            <li><b>🟤 Kahverengiler (Hava ve Karbon kaynağı):</b> Kuru yapraklar, dal parçaları, tuvalet kağıdı ruloları, yumurta kartonları, talaş.</li>
+            <li><b>🟢 Yeşiller (Nem, Azot ve Protein Kaynağı):</b> Meyve ve sebze artıkları, taze çimen, kahve telvesi, çay yaprakları. Süreci hızlandırır ancak fazla olursa koku ve balçıklaşmaya yol açar.</li>
+            <li><b>🟤 Kahverengiler (Hava, Karbon ve Enerji Kaynağı):</b> Kuru yapraklar, dal parçaları, tuvalet kağıdı ruloları, talaş, parçalanmış kartonlar. Yığının hava almasını sağlar, fazla olursa süreci yavaşlatır.</li>
         </ul>
+        <b>Nem ve Oksijen Kontrolü:</b> Kompostunuz bir sünger gibi nemli olmalı ancak sıkıldığında su damlatmamalıdır. Haftada bir karıştırarak mikroorganizmalar için gerekli oksijeni sağlamalısınız.
         </div>
     </div>
     
     <div class="recipe-card bg-pink">
-        <div class="recipe-title">❌ Komposta Asla Atılmaması Gerekenler</div>
+        <div class="recipe-title">❌ Komposta Asla Atılmaması Gerekenler ve Sebepleri</div>
         <div class="ingredient-list">
         <ul>
-            <li>Et, kemik ve balık ürünleri (Patojen ve haşere çeker).</li>
-            <li>Süt ürünleri (Peynir, yoğurt).</li>
-            <li>Yağlı ve soslu yemek artıkları.</li>
-            <li>Kedi/Köpek dışkısı.</li>
+            <li><b>Et, Kemik, Balık ve Yağlar:</b> Zararlı patojenleri, sinekleri ve kemirgenleri yığına çeker, anaerobik koku üretir.</li>
+            <li><b>Süt Ürünleri (Peynir, Yoğurt, Süt):</b> Oksijen akışını tıkayarak kokulu çürümeye yol açar.</li>
+            <li><b>Hastalık Bitkiler veya Yabani Ot Tohumları:</b> Ev tipi soğuk kompost yığınları bu zararlıları öldürecek yüksek sıcaklıklara (60°C+) her zaman ulaşamaz, bu nedenle hastalık bahçenize tekrar yayılabilir.</li>
+            <li><b>Kedi/Köpek Dışkısı:</b> İnsan sağlığına zararlı kalıcı parazitler içerebilir.</li>
+            <li><b>Narenciye ve Soğan Fazlası:</b> Solucanlara ve kompost içindeki yararlı bakterilere zarar verebilecek aşırı asidik bir ortam yaratır.</li>
         </ul>
+        </div>
+    </div>
+
+    <div class="recipe-card bg-purple">
+        <div class="recipe-title">🌍 Sürdürülebilirlik ve İleri Dönüşüm (Upcycling)</div>
+        <div class="ingredient-list">
+        <b>Geri Dönüşüm (Recycling) ve İleri Dönüşüm (Upcycling) Arasındaki Fark:</b><br>
+        Geri dönüşüm, bir atığı yüksek enerji harcayarak parçalayıp tekrar ham maddeye dönüştürme işlemidir. İleri dönüşüm ise, atık durumundaki bir malzemeyi kalitesini ve estetik/işlevsel değerini artırarak doğrudan yeni bir ürüne çevirmektir. Meyve kabuklarından sirke veya cilt toniği üretmek tam bir ileri dönüşümdür.<br><br>
+        <b>Yerel Ekolojik Fayda:</b><br>
+        Gıdayı mikro ölçekte (evde veya mahalle pazarında) kurtarmak, atıkların şehir dışındaki tesislere taşınması sırasında oluşacak lojistik kaynaklı karbon emisyonlarını sıfıra indirir. Toprağa geri dönen her gram kompost, kimyasal gübre ihtiyacını azaltarak toprak ekosistemini canlandırır.
         </div>
     </div>
     """, unsafe_allow_html=True)
