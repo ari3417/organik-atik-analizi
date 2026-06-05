@@ -2,13 +2,22 @@ import streamlit as st
 from ultralytics import YOLO
 from PIL import Image
 import os
+import base64
+from io import BytesIO
 
 # 1. Sayfa Ayarları
 st.set_page_config(page_title="Rescue Scanner & Coach", page_icon="♻️", layout="centered")
 
-# --- ÖZEL CSS (Renkli Bloklar ve Tasarım İçin) ---
+# Görselleri HTML içine gömebilmek için dönüştürücü fonksiyon
+def image_to_base64(img):
+    buffered = BytesIO()
+    img.save(buffered, format="PNG")
+    return base64.b64encode(buffered.getvalue()).decode()
+
+# --- ÖZEL CSS (Tamamen Yeni Tasarım İçin) ---
 st.markdown("""
 <style>
+    /* Sabit Tarif Kartları */
     .recipe-card {
         padding: 25px;
         border-radius: 15px;
@@ -19,9 +28,83 @@ st.markdown("""
     .bg-pink { background-color: #FFB7B2; color: #333;}
     .bg-blue { background-color: #AEC6CF; color: #333;}
     .bg-mint { background-color: #B2E2D4; color: #333;}
-    
     .recipe-title { font-size: 28px; font-weight: bold; text-align: center; margin-bottom: 15px; }
     .ingredient-list { font-size: 18px; line-height: 1.8; }
+
+    /* Fotoğraf üstüne binen Sekmeler (Tabs) */
+    [data-testid="stImage"] {
+        margin-bottom: -55px; /* Sekmeleri fotoğrafın üstüne çeker */
+        position: relative;
+        z-index: 1;
+    }
+    [data-testid="stTabs"] [data-baseweb="tab-list"] {
+        justify-content: center;
+        gap: 15px;
+        position: relative;
+        z-index: 99;
+    }
+    [data-testid="stTabs"] [data-baseweb="tab"] {
+        border-radius: 20px !important;
+        border: 3px solid white !important;
+        padding: 10px 25px !important;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important;
+        color: #333 !important;
+        font-weight: 800 !important;
+        font-size: 16px !important;
+    }
+    /* Sekme Renkleri */
+    [data-testid="stTabs"] [data-baseweb="tab"]:nth-child(1) { background-color: #B2E2D4 !important; }
+    [data-testid="stTabs"] [data-baseweb="tab"]:nth-child(2) { background-color: #FFD580 !important; }
+    [data-testid="stTabs"] [data-baseweb="tab"]:nth-child(3) { background-color: #FFB7B2 !important; }
+
+    /* Fotoğraf Yükleme Butonu Özelleştirmesi */
+    [data-testid="stFileUploader"] section {
+        background-color: #A8C9B4 !important;
+        border: 2px solid #333 !important;
+        border-radius: 10px !important;
+        padding: 15px !important;
+    }
+    [data-testid="stFileUploader"] section > div > span {
+        display: none !important; /* Sürükle bırak metnini gizle */
+    }
+    [data-testid="stFileUploader"] small {
+        display: none !important; /* Limit metnini gizle */
+    }
+
+    /* Hardal Sarısı Görüntü Kutuları */
+    .mustard-box {
+        background-color: #E2A600;
+        border: 2px solid #5A4D2E;
+        border-radius: 10px;
+        padding: 10px;
+        height: 100%;
+        min-height: 250px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        font-weight: bold;
+        text-align: center;
+    }
+    .mustard-box img {
+        max-width: 100%;
+        border-radius: 5px;
+        border: 1px solid rgba(0,0,0,0.2);
+    }
+
+    /* Aksiyon Planı Banner'ı */
+    .action-banner {
+        background-color: #9A9B7A;
+        color: white;
+        text-align: right;
+        padding: 12px 25px;
+        font-size: 20px;
+        font-weight: bold;
+        border-radius: 0px 0px 10px 10px;
+        margin-top: 10px;
+        letter-spacing: 1px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -45,13 +128,40 @@ tab1, tab2, tab3 = st.tabs(["📸 Kurtarma Tarayıcısı", "🍂 Kompost Modu", 
 # SEKME 1: AYRIŞTIRMA VE TARİFLER
 # ==========================================
 with tab1:
-    st.markdown("### 🔍 Kurtarılacak Ürünü Tarayın")
-    st.write("Yumuşamış veya hasar görmüş meyvenizin fotoğrafını yükleyin, sistem onu tanıyıp size özel harika bir sıfır atık tarifi sunsun.")
+    st.markdown("<br><br>", unsafe_allow_html=True)
     
-    uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"], key="scanner")
+    # Üst Panel: Sol Yazı/Buton, Sağ İki Sarı Kutu
+    col1, col2, col3 = st.columns([1.2, 1, 1], gap="small")
+    
+    with col1:
+        st.markdown("""
+        <div style="font-family: 'Arial Black', sans-serif; font-size: 42px; color: #A8C9B4; line-height: 1; margin-bottom: 20px; letter-spacing: -1px;">
+            KURTARILACAK<br>ÜRÜNÜ TARAYIN
+        </div>
+        """, unsafe_allow_html=True)
+        
+        uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"], key="scanner", label_visibility="collapsed")
+        
+        st.markdown("""
+        <div style="font-size: 14px; color: #555; margin-top: 15px; line-height: 1.4;">
+            Yumuşamış veya hasar görmüş meyvenizin fotoğrafını yükleyin, sistem onu tanıyıp size özel harika bir sıfır atık tarifi sunsun.
+        </div>
+        """, unsafe_allow_html=True)
 
-    if uploaded_file is not None:
+    # İşlem Mantığı ve Görsel Yerleşimi
+    if uploaded_file is None:
+        # Fotoğraf yüklenmediyse boş sarı kutuları göster
+        with col2:
+            st.markdown('<div class="mustard-box">Seçilen fotoğraf</div>', unsafe_allow_html=True)
+        with col3:
+            st.markdown('<div class="mustard-box">AI Taraması</div>', unsafe_allow_html=True)
+        
+        st.markdown('<div class="action-banner">AKSİYON PLANI (HASAR ORANI: - )</div>', unsafe_allow_html=True)
+
+    else:
+        # Fotoğraf Yüklendiğinde
         image = Image.open(uploaded_file)
+        img_b64 = image_to_base64(image)
         
         st.write("🔄 Yapay zeka görüntüyü işliyor...")
         results = model(image, conf=0.20)
@@ -75,9 +185,28 @@ with tab1:
                     if sinif_adi not in tespit_edilen_urunler:
                         tespit_edilen_urunler.append(sinif_adi)
             
-            st.image(result.plot()[:, :, ::-1], caption="AI Tespiti", use_container_width=True)
+            # AI Tespitli görüntüyü base64'e çevirme
+            res_plotted = result.plot()[:, :, ::-1]
+            res_img = Image.fromarray(res_plotted)
+            res_b64 = image_to_base64(res_img)
+            
+            # Dolu Sarı Kutular
+            with col2:
+                st.markdown(f'''
+                <div class="mustard-box">
+                    <div style="margin-bottom:10px;">Seçilen fotoğraf</div>
+                    <img src="data:image/png;base64,{img_b64}">
+                </div>
+                ''', unsafe_allow_html=True)
+            with col3:
+                st.markdown(f'''
+                <div class="mustard-box">
+                    <div style="margin-bottom:10px;">AI Taraması</div>
+                    <img src="data:image/png;base64,{res_b64}">
+                </div>
+                ''', unsafe_allow_html=True)
 
-        st.markdown("---")
+        st.markdown("<br>", unsafe_allow_html=True)
         
         # --- MATEMATİK VE AKSİYON PLANI ---
         if len(tespit_edilen_urunler) > 0:
@@ -85,7 +214,8 @@ with tab1:
             bozukluk_orani = (toplam_bozuk_alan / toplam_meyve_alani) * 100 if toplam_meyve_alani > 0 else 100
             if bozukluk_orani > 100: bozukluk_orani = 100.0
             
-            st.markdown(f"### 📋 Aksiyon Planı (Hasar Oranı: %{bozukluk_orani:.1f})")
+            # Alt Banner
+            st.markdown(f'<div class="action-banner">AKSİYON PLANI (HASAR ORANI: %{bozukluk_orani:.1f})</div><br>', unsafe_allow_html=True)
             
             if bozukluk_orani <= 5.0:
                 st.success("**Kategori: Doğrudan Yeniden Dağıtım (Taze Tüketim)**")
@@ -95,7 +225,7 @@ with tab1:
                 st.warning("**Kategori: Yenilebilir Geri Kazanım (Sıfır Atık İleri Dönüşüm)**")
                 st.write("Hasarlı kısımları kestikten sonra kalan temiz bölümlerle maksimum verim elde edebileceğiniz tarifler:")
                 
-                # --- DİNAMİK YAPAY ZEKA TARİFLERİ BURADA DEVREYE GİRER ---
+                # --- DİNAMİK YAPAY ZEKA TARİFLERİ ---
                 if "portakal" in tespit_edilen_urunler:
                     st.markdown("""
                     <div class="recipe-card bg-purple">
@@ -217,6 +347,7 @@ with tab1:
 # SEKME 2: KOMPOST MODU
 # ==========================================
 with tab2:
+    st.markdown("<br>", unsafe_allow_html=True)
     st.header("Evaluate & Redirect (Kompost Modu)")
     st.markdown("Kompost dengenizi kontrol edin ve organik atıklarınızın olgunlaşma durumunu analiz edin.")
     
@@ -240,6 +371,7 @@ with tab2:
 # ==========================================
 
 with tab3:
+    st.markdown("<br>", unsafe_allow_html=True)
     st.header("Learn & Coach")
     st.markdown("Gönüllü eğitim rehberi ve döngüsel ekonomi bilgi bankası.")
     
