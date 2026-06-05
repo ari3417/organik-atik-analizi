@@ -14,7 +14,7 @@ def image_to_base64(img):
     img.save(buffered, format="PNG")
     return base64.b64encode(buffered.getvalue()).decode()
 
-# --- ÖZEL CSS (Tamamen Yeni Tasarım İçin) ---
+# --- ÖZEL CSS (Renkli Bloklar ve Tasarım İçin) ---
 st.markdown("""
 <style>
     /* Sabit Tarif Kartları */
@@ -23,17 +23,18 @@ st.markdown("""
         border-radius: 15px;
         margin-bottom: 20px;
         color: #333333;
+        height: 100%;
     }
     .bg-purple { background-color: #B5B2E5; color: white;}
     .bg-pink { background-color: #FFB7B2; color: #333;}
     .bg-blue { background-color: #AEC6CF; color: #333;}
     .bg-mint { background-color: #B2E2D4; color: #333;}
-    .recipe-title { font-size: 28px; font-weight: bold; text-align: center; margin-bottom: 15px; }
-    .ingredient-list { font-size: 18px; line-height: 1.8; }
+    .recipe-title { font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 15px; }
+    .ingredient-list { font-size: 16px; line-height: 1.8; }
 
     /* Fotoğraf üstüne binen Sekmeler (Tabs) */
     [data-testid="stImage"] {
-        margin-bottom: -55px; /* Sekmeleri fotoğrafın üstüne çeker */
+        margin-bottom: -55px; 
         position: relative;
         z-index: 1;
     }
@@ -65,10 +66,10 @@ st.markdown("""
         padding: 15px !important;
     }
     [data-testid="stFileUploader"] section > div > span {
-        display: none !important; /* Sürükle bırak metnini gizle */
+        display: none !important; 
     }
     [data-testid="stFileUploader"] small {
-        display: none !important; /* Limit metnini gizle */
+        display: none !important; 
     }
 
     /* Hardal Sarısı Görüntü Kutuları */
@@ -148,9 +149,8 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
 
-    # İşlem Mantığı ve Görsel Yerleşimi
+    # Görüntü Kutuları Yönetimi
     if uploaded_file is None:
-        # Fotoğraf yüklenmediyse boş sarı kutuları göster
         with col2:
             st.markdown('<div class="mustard-box">Seçilen fotoğraf</div>', unsafe_allow_html=True)
         with col3:
@@ -159,7 +159,6 @@ with tab1:
         st.markdown('<div class="action-banner">AKSİYON PLANI (HASAR ORANI: - )</div>', unsafe_allow_html=True)
 
     else:
-        # Fotoğraf Yüklendiğinde
         image = Image.open(uploaded_file)
         img_b64 = image_to_base64(image)
         
@@ -185,12 +184,10 @@ with tab1:
                     if sinif_adi not in tespit_edilen_urunler:
                         tespit_edilen_urunler.append(sinif_adi)
             
-            # AI Tespitli görüntüyü base64'e çevirme
             res_plotted = result.plot()[:, :, ::-1]
             res_img = Image.fromarray(res_plotted)
             res_b64 = image_to_base64(res_img)
             
-            # Dolu Sarı Kutular
             with col2:
                 st.markdown(f'''
                 <div class="mustard-box">
@@ -214,7 +211,6 @@ with tab1:
             bozukluk_orani = (toplam_bozuk_alan / toplam_meyve_alani) * 100 if toplam_meyve_alani > 0 else 100
             if bozukluk_orani > 100: bozukluk_orani = 100.0
             
-            # Alt Banner
             st.markdown(f'<div class="action-banner">AKSİYON PLANI (HASAR ORANI: %{bozukluk_orani:.1f})</div><br>', unsafe_allow_html=True)
             
             if bozukluk_orani <= 5.0:
@@ -225,7 +221,6 @@ with tab1:
                 st.warning("**Kategori: Yenilebilir Geri Kazanım (Sıfır Atık İleri Dönüşüm)**")
                 st.write("Hasarlı kısımları kestikten sonra kalan temiz bölümlerle maksimum verim elde edebileceğiniz tarifler:")
                 
-                # --- DİNAMİK YAPAY ZEKA TARİFLERİ ---
                 if "portakal" in tespit_edilen_urunler:
                     st.markdown("""
                     <div class="recipe-card bg-purple">
@@ -301,20 +296,22 @@ with tab1:
                 st.write("Aşırı çürüme veya küflenme tespit edildi. Standart yığın kompostuna atmak patojen riski taşıyabilir. Kahverengi çöp kutusuna atın.")
 
         elif toplam_bozuk_alan > 0:
-            st.info("Sistem sadece hasarlı bölgeyi algıladı ancak meyvenin türünü (elma, muz vb.) net olarak tanıyamadığı için özel bir tarif sunamıyor.")
+            st.info("Sistem sadece hasarlı bölgeyi algıladı ancak meyvenin türünü net olarak tanıyamadığı için özel bir tarif sunamıyor.")
         else:
             st.info("Sistem bu fotoğrafta net bir ürün tanıyamadı.")
 
     # --- SABİT (HER ZAMAN GÖRÜNEN) GENEL TARİFLER ---
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown("### 📚 Fotoğraf Yüklemeden Yapabileceğiniz Klasikler")
+    st.markdown("Evinizde birikmeye başlayan meyve ve sebzeler için israfı önleyen, uzun ömürlü temel teknikler.")
     
-    col1, col2 = st.columns(2)
-    with col1:
+    # SATIR 1
+    row1_col1, row1_col2 = st.columns(2)
+    with row1_col1:
         st.markdown("""
         <div class="recipe-card bg-blue">
             <div class="recipe-title">🥒 Hızlı Turşu Kurulumu</div>
-            <p>Hafif pörsümüş her türlü sebzeyi kurtarın.</p>
+            <p>Hafif pörsümüş her türlü sebzeyi (salatalık, havuç, lahana) kurtarın.</p>
             <div class="ingredient-list">
                 <b>Malzemeler:</b><br>
                 🫙 Cam Kavanoz<br>
@@ -327,19 +324,86 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
         
-    with col2:
+    with row1_col2:
         st.markdown("""
         <div class="recipe-card bg-pink">
             <div class="recipe-title">🍓 Evrensel Meyve Reçeli</div>
-            <p>Yumuşamış tüm meyveler için standart formül.</p>
+            <p>Yumuşamış ve taze yenmeyecek tüm meyveler için standart formül.</p>
             <div class="ingredient-list">
                 <b>Malzemeler:</b><br>
                 🍑 1 Ölçü Meyve<br>
                 🍚 1 Ölçü Şeker<br>
                 🍋 Çeyrek Limon Suyu
             </div><br>
-            <br>
             <p><b>Yapılışı:</b> Meyveleri doğrayıp akşamdan şekerle bekletin. Sabah kendi suyuyla kıvam alana kadar kaynatın. Kapatmadan hemen önce limon suyunu ekleyin.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # SATIR 2
+    row2_col1, row2_col2 = st.columns(2)
+    with row2_col1:
+        st.markdown("""
+        <div class="recipe-card bg-mint">
+            <div class="recipe-title">🍵 Atık Sebze Suyu (Bulyon)</div>
+            <p>Yemek yaparken ayırdığınız yıkanmış sebze kabuklarını ve köklerini değerlendirin.</p>
+            <div class="ingredient-list">
+                <b>Malzemeler:</b><br>
+                🥬 Biriktirilmiş Sebze Artıkları (Havuç ucu, soğan kabuğu vb.)<br>
+                💧 2 Litre Su<br>
+                🧄 3 Diş Sarımsak<br>
+                🌿 Defne Yaprağı & Karabiber
+            </div><br>
+            <p><b>Yapılışı:</b> Tüm malzemeleri tencereye alın. 1 saat kaynatın. Süzüp kavanozlayın ve buzdolabına kaldırın. Çorba ve pilavlarda bulyon olarak kullanın.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with row2_col2:
+        st.markdown("""
+        <div class="recipe-card bg-purple">
+            <div class="recipe-title">🥔 Baharatlı Kabuk Cipsi</div>
+            <p>Soyduğunuz patates, havuç ve elma kabuklarını çöpe atmak yerine çıtır bir atıştırmalığa dönüştürün.</p>
+            <div class="ingredient-list">
+                <b>Malzemeler:</b><br>
+                🥕 Kalın soyulmuş sebze/meyve kabukları<br>
+                🫒 2 Yemek Kaşığı Zeytinyağı<br>
+                🧂 Tuz ve Karabiber<br>
+                🌶️ Toz Kırmızı Biber
+            </div><br>
+            <p><b>Yapılışı:</b> Kabukları yıkayıp iyice kurulayın. Yağ ve baharatlarla harmanlayıp yağlı kağıt serili tepsiye dizin. 180° fırında 10-15 dk çıtırlaşana kadar pişirin.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # SATIR 3
+    row3_col1, row3_col2 = st.columns(2)
+    with row3_col1:
+        st.markdown("""
+        <div class="recipe-card bg-pink">
+            <div class="recipe-title">🌿 Solmuş Yeşillik Pesto Sosu</div>
+            <p>Formunu kaybetmiş taze otları veya turp/havuç saplarını harika bir makarna sosuna çevirin.</p>
+            <div class="ingredient-list">
+                <b>Malzemeler:</b><br>
+                🥬 Pörsümüş yeşillikler (maydanoz, fesleğen, roka)<br>
+                🫒 Yarım Çay Bardağı Zeytinyağı<br>
+                🧄 2 Diş Sarımsak<br>
+                🥜 Ceviz veya Fındık
+            </div><br>
+            <p><b>Yapılışı:</b> Bütün malzemeleri mutfak robotuna alın. Pürüzsüz bir sos kıvamına gelene kadar çekin. Cam kavanozda üzerine zeytinyağı dökerek dolapta 1 hafta saklayabilirsiniz.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with row3_col2:
+        st.markdown("""
+        <div class="recipe-card bg-blue">
+            <div class="recipe-title">☕ Kurutulmuş Meyve Çayı</div>
+            <p>Yenmeyen elma, armut, ayva kabuklarını ve portakal dilimlerini kış çayı yapmak için değerlendirin.</p>
+            <div class="ingredient-list">
+                <b>Malzemeler:</b><br>
+                🍎 Temiz meyve kabukları ve çekirdek yuvaları<br>
+                🍂 Çubuk Tarçın<br>
+                🌸 Karanfil<br>
+                💧 Kaynar Su
+            </div><br>
+            <p><b>Yapılışı:</b> Kabukları fırında veya kış güneşi gören bir yerde tamamen kurutun. İhtiyacınız olduğunda demliğe bir avuç atıp üzerine sıcak su, tarçın ve karanfil ekleyerek 10 dk demlendirin.</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -369,7 +433,6 @@ with tab2:
 # ==========================================
 # SEKME 3: EĞİTİM DESTEĞİ
 # ==========================================
-
 with tab3:
     st.markdown("<br>", unsafe_allow_html=True)
     st.header("Learn & Coach")
