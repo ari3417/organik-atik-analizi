@@ -26,7 +26,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 2. LOGO YÜKLEME (En Üstte)
-# Eğer logo.png dosyası dizinde varsa göster
 if os.path.exists("logo.png"):
     st.image("logo.png", use_container_width=True)
 else:
@@ -69,7 +68,6 @@ with tab1:
                 if sinif_adi != 'bozuk_kısım' and sinif_adi not in tespit_edilen_urunler:
                     tespit_edilen_urunler.append(sinif_adi)
             
-            # Kutu çizilmiş resmi göster
             st.image(result.plot()[:, :, ::-1], caption="AI Tespiti", use_container_width=True)
 
         st.markdown("---")
@@ -97,7 +95,8 @@ with tab1:
                 <b>🎉 Sonuç:</b> Çay ve kahvenin yanında tüketebileceğiniz harika sıfır atık atıştırmalıklar!
             </div>
             """, unsafe_allow_html=True)
-            st.video("https://www.youtube.com/watch?v=R9_uQJ8_s5A") # Örnek YouTube Linki
+            # Çalışan gerçek YouTube linki
+            st.video("https://www.youtube.com/watch?v=lhbUMg1Swbo") 
 
         elif "muz" in tespit_edilen_urunler:
             st.markdown("""
@@ -121,7 +120,8 @@ with tab1:
                 <b>🎉 Sonuç:</b> Sıfır şekerli, suçluluk hissettirmeyen sağlıklı tatlı!
             </div>
             """, unsafe_allow_html=True)
-            st.video("https://www.youtube.com/watch?v=Jb-i-uL5cOE")
+            # Çalışan gerçek YouTube linki
+            st.video("https://www.youtube.com/watch?v=HYQaK-6-9L4")
             
         elif "elma" in tespit_edilen_urunler:
             st.markdown("""
@@ -145,7 +145,8 @@ with tab1:
                 <b>🎉 Sonuç:</b> Ev yapımı, bağışıklık güçlendirici %100 doğal sirke!
             </div>
             """, unsafe_allow_html=True)
-            st.video("https://www.youtube.com/watch?v=e_5aWvJ6d1c")
+            # Çalışan gerçek YouTube linki
+            st.video("https://www.youtube.com/watch?v=eE0I39eGMQA")
 
     # --- SABİT (HER ZAMAN GÖRÜNEN) GENEL TARİFLER ---
     st.markdown("<br><br>", unsafe_allow_html=True)
@@ -156,7 +157,7 @@ with tab1:
     
     with col1:
         st.markdown("""
-        <div class="recipe-card bg-blue" style="height: 450px;">
+        <div class="recipe-card bg-blue">
             <div class="recipe-title">🥒 Hızlı Turşu Kurulumu</div>
             <p>Hafif pörsümüş her türlü sebzeyi (salatalık, havuç, lahana) kurtarın.</p>
             <div class="ingredient-list">
@@ -173,7 +174,7 @@ with tab1:
         
     with col2:
         st.markdown("""
-        <div class="recipe-card bg-pink" style="height: 450px;">
+        <div class="recipe-card bg-pink">
             <div class="recipe-title">🍓 Evrensel Meyve Reçeli</div>
             <p>Yumuşamış ve taze yenmeyecek tüm meyveler için standart formül.</p>
             <div class="ingredient-list">
