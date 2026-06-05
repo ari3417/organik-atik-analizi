@@ -52,7 +52,7 @@ with tab1:
                 sinif_id = int(box.cls[0])
                 sinif_adi = model.names[sinif_id]
                 
-
+                
                 if sinif_adi == BOZUK_ETIKETI:
                     toplam_bozuk_alan += alan
                 else:
