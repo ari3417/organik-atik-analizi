@@ -221,6 +221,8 @@ with tab1:
                 st.warning("**Kategori: Yenilebilir Geri Kazanım (Sıfır Atık İleri Dönüşüm)**")
                 st.write("Hasarlı kısımları kestikten sonra kalan temiz bölümlerle maksimum verim elde edebileceğiniz tarifler:")
                 
+                # --- DİNAMİK YAPAY ZEKA TARİFLERİ ---
+                
                 if "portakal" in tespit_edilen_urunler:
                     st.markdown("""
                     <div class="recipe-card bg-purple">
@@ -243,8 +245,28 @@ with tab1:
                     </div>
                     """, unsafe_allow_html=True)
                     st.video("https://www.youtube.com/watch?v=lhbUMg1Swbo") 
+                    
+                    st.markdown("""
+                    <div class="recipe-card bg-purple">
+                        <div class="recipe-title">🍊 Doğal Yüzey Temizleyici Sirke</div>
+                        <div class="ingredient-list">
+                            <b>Malzemeler:</b><br>
+                            🍊 Sıkılmış portakal/limon kabukları<br>
+                            🥃 Beyaz Sirke<br>
+                            🫙 Büyük Cam Kavanoz
+                        </div>
+                        <hr>
+                        <b>Adımlar:</b>
+                        <ul>
+                            <li>Kullanılmış narenciye kabuklarını kavanoza ağzına kadar doldurun.</li>
+                            <li>Üzerini tamamen geçecek kadar beyaz sirke ekleyin ve kapağını sıkıca kapatın.</li>
+                            <li>2 hafta boyunca karanlık bir dolapta bekletip süzün.</li>
+                            <li>Sprey şişesine alıp yarı yarıya suyla seyrelterek mutfak tezgahlarında kullanın!</li>
+                        </ul>
+                    </div>
+                    """, unsafe_allow_html=True)
 
-                elif "muz" in tespit_edilen_urunler:
+                if "muz" in tespit_edilen_urunler:
                     st.markdown("""
                     <div class="recipe-card bg-pink">
                         <div class="recipe-title">🍌 Rafinesiz Muzlu Vegan Dondurma</div>
@@ -266,7 +288,27 @@ with tab1:
                     """, unsafe_allow_html=True)
                     st.video("https://www.youtube.com/watch?v=HYQaK-6-9L4")
                     
-                elif "elma" in tespit_edilen_urunler:
+                    st.markdown("""
+                    <div class="recipe-card bg-pink">
+                        <div class="recipe-title">🍌 Muz Kabuğu Sıvı Bitki Gübresi</div>
+                        <div class="ingredient-list">
+                            <b>Malzemeler:</b><br>
+                            🍌 Tüketilmiş muzların kabukları<br>
+                            💧 1 Litre İçme Suyu<br>
+                            🫙 Geniş Cam Kavanoz
+                        </div>
+                        <hr>
+                        <b>Adımlar:</b>
+                        <ul>
+                            <li>Muz kabuklarını makasla küçük parçalar halinde doğrayın.</li>
+                            <li>Kavanoza alıp üzerine suyu ekleyin ve kapağını kapatın.</li>
+                            <li>24-48 saat oda sıcaklığında bekletin.</li>
+                            <li>Bu potasyum zengini suyu süzerek ev bitkilerinizi sulamak için kullanın (Kalan kabukları komposta atın!).</li>
+                        </ul>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                if "elma" in tespit_edilen_urunler:
                     st.markdown("""
                     <div class="recipe-card bg-mint">
                         <div class="recipe-title">🍏 Probiyotik Elma Kabuğu Sirkesi</div>
@@ -287,6 +329,69 @@ with tab1:
                     </div>
                     """, unsafe_allow_html=True)
                     st.video("https://www.youtube.com/watch?v=eE0I39eGMQA")
+                    
+                    st.markdown("""
+                    <div class="recipe-card bg-mint">
+                        <div class="recipe-title">🍏 Tarçınlı Fırın Elma Cipsi</div>
+                        <div class="ingredient-list">
+                            <b>Malzemeler:</b><br>
+                            🍎 Yumuşamış elmalar<br>
+                            🍂 Toz Tarçın<br>
+                            🍋 Çeyrek Limonun Suyu
+                        </div>
+                        <hr>
+                        <b>Adımlar:</b>
+                        <ul>
+                            <li>Elmaları kararmaması için limonlu suda bekleterek çok ince halkalar halinde dilimleyin.</li>
+                            <li>Yağlı kağıt serili tepsiye dizip üzerlerine tarçın serpin.</li>
+                            <li>100 derece fırında iyice kuruyana kadar (yaklaşık 1.5 - 2 saat) pişirin.</li>
+                        </ul>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                if "domates" in tespit_edilen_urunler:
+                    st.markdown("""
+                    <div class="recipe-card bg-pink">
+                        <div class="recipe-title">🍅 Fırınlanmış Konsantre Domates Sosu</div>
+                        <div class="ingredient-list">
+                            <b>Malzemeler:</b><br>
+                            🍅 Yumuşamış domatesler<br>
+                            🫒 3 Yemek Kaşığı Zeytinyağı<br>
+                            🧄 2 Diş Sarımsak<br>
+                            🌿 Kekik ve Tuz
+                        </div>
+                        <hr>
+                        <b>Adımlar:</b>
+                        <ul>
+                            <li>Domatesleri iri parçalara bölün ve fırın tepsisine dizin.</li>
+                            <li>Üzerine zeytinyağı, sarımsak ve baharatları gezdirin.</li>
+                            <li>200 derece fırında suları hafif çekip karamelize olana kadar pişirin.</li>
+                            <li>Fırından çıkınca blenderdan geçirip kavanozlayın.</li>
+                        </ul>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                if "salatalık" in tespit_edilen_urunler:
+                    st.markdown("""
+                    <div class="recipe-card bg-blue">
+                        <div class="recipe-title">🥒 Sıfır Atık Detoks & Cilt Toniği</div>
+                        <div class="ingredient-list">
+                            <b>Malzemeler:</b><br>
+                            🥒 Pörsümüş salatalık ve sap kısımları<br>
+                            🍋 Yarım Limon<br>
+                            🌿 Taze Nane<br>
+                            💧 İçme Suyu
+                        </div>
+                        <hr>
+                        <b>Adımlar:</b>
+                        <ul>
+                            <li>Salatalığın orta kısımlarını halka doğrayıp limon ve nane ile sürahiye atın (İçme suyu için).</li>
+                            <li>Tüketilmeyen uç kısımlarını ve kabuklarını blenderdan geçirin.</li>
+                            <li>Çıkan saf salatalık suyunu süzüp buz kalıplarına dondurun.</li>
+                            <li>Sabahları yüzünüzde gezdirerek doğal tonik olarak kullanın!</li>
+                        </ul>
+                    </div>
+                    """, unsafe_allow_html=True)
                     
             elif bozukluk_orani <= 80.0:
                 st.error("**Kategori: Kompost (Organik Gübre)**")
