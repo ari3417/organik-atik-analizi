@@ -1,16 +1,36 @@
 import streamlit as st
 from ultralytics import YOLO
-# ... kodun geri kalanı ...
 from PIL import Image
+import os
 
-# 1. Sayfa Ayarları (Mobil/Web uyumlu ve geniş tasarım)
+# 1. Sayfa Ayarları
 st.set_page_config(page_title="Rescue Scanner & Coach", page_icon="♻️", layout="centered")
 
-# 2. Ana Başlık ve Açıklama
-st.title("📱 DIGITAL PLATFORM: RESCUE SCANNER & COACH")
+# --- ÖZEL CSS (Renkli Bloklar ve Tasarım İçin) ---
 st.markdown("""
-**Rescue Scanner & Coach**, gönüllülere gıda ayırma, yeniden kullanım ve kompost hazırlama süreçlerinde rehberlik eden, fotoğraf tabanlı bir karar destek arayüzüdür.
-""")
+<style>
+    .recipe-card {
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        color: #333333;
+    }
+    .bg-purple { background-color: #B5B2E5; color: white;}
+    .bg-pink { background-color: #FFB7B2; color: #333;}
+    .bg-blue { background-color: #AEC6CF; color: #333;}
+    .bg-mint { background-color: #B2E2D4; color: #333;}
+    
+    .recipe-title { font-size: 28px; font-weight: bold; text-align: center; margin-bottom: 15px; }
+    .ingredient-list { font-size: 18px; line-height: 1.8; }
+</style>
+""", unsafe_allow_html=True)
+
+# 2. LOGO YÜKLEME (En Üstte)
+# Eğer logo.png dosyası dizinde varsa göster
+if os.path.exists("logo.png"):
+    st.image("logo.png", use_container_width=True)
+else:
+    st.title("🌱 RESCUE SCANNER & COACH")
 
 # Modeli yükleme
 @st.cache_resource
@@ -20,16 +40,16 @@ def load_model():
 model = load_model()
 
 # 3. Sekmelerin (Tabs) Oluşturulması
-tab1, tab2, tab3 = st.tabs(["📸 Ayrıştırma ve Değerlendirme", "🍂 Kompost Modu", "📖 Eğitim Desteği"])
+tab1, tab2, tab3 = st.tabs(["📸 Kurtarma Tarayıcısı", "🍂 Kompost Modu", "📖 Eğitim Desteği"])
 
 # ==========================================
-# SEKME 1: AYRIŞTIRMA VE DEĞERLENDİRME
+# SEKME 1: AYRIŞTIRMA VE TARİFLER
 # ==========================================
 with tab1:
-    st.header("Scan & Sort")
-    st.markdown("Malzemeleri tanımlayın ve doğrudan yeniden dağıtım, yenilebilir geri kazanım veya kompost seçeneklerini görün.")
+    st.markdown("### 🔍 Kurtarılacak Ürünü Tarayın")
+    st.write("Yumuşamış veya hasar görmüş meyvenizin fotoğrafını yükleyin, sistem onu tanıyıp size özel harika bir sıfır atık tarifi sunsun.")
     
-    uploaded_file = st.file_uploader("Analiz etmek istediğiniz ürünün fotoğrafını yükleyin", type=["jpg", "jpeg", "png"], key="scanner")
+    uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"], key="scanner")
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
@@ -37,76 +57,135 @@ with tab1:
         st.write("🔄 Yapay zeka görüntüyü işliyor...")
         results = model(image, conf=0.20)
         
-        BOZUK_ETIKETI = 'bozuk_kısım'
+        tespit_edilen_urunler = []
         
         for result in results:
-            boxes = result.boxes
-            toplam_meyve_alani = 0
-            toplam_bozuk_alan = 0
-            tespit_edilen_urunler = []
-            
-            for box in boxes:
-                x1, y1, x2, y2 = box.xyxy[0].tolist()
-                alan = (x2 - x1) * (y2 - y1)
-                
+            for box in result.boxes:
                 sinif_id = int(box.cls[0])
                 sinif_adi = model.names[sinif_id]
+                if sinif_adi == 'domates': sinif_adi = 'elma'
+                elif sinif_adi == 'elma': sinif_adi = 'domates'
                 
-                
-                if sinif_adi == BOZUK_ETIKETI:
-                    toplam_bozuk_alan += alan
-                else:
-                    toplam_meyve_alani += alan
-                    if sinif_adi not in tespit_edilen_urunler:
-                        tespit_edilen_urunler.append(sinif_adi)
+                if sinif_adi != 'bozuk_kısım' and sinif_adi not in tespit_edilen_urunler:
+                    tespit_edilen_urunler.append(sinif_adi)
             
-            if len(tespit_edilen_urunler) > 0:
-                urun_ismi = ", ".join(tespit_edilen_urunler).upper()
-                bozukluk_orani = (toplam_bozuk_alan / toplam_meyve_alani) * 100 if toplam_meyve_alani > 0 else 100
-                if bozukluk_orani > 100: bozukluk_orani = 100.0
-                
-                # --- GÖRSEL ANALİZ ---
-                st.markdown("---")
-                st.write(f"🔍 **Yapay Zeka Tespit Görüntüsü:** Lütfen kırmızı/işaretli kutu ile belirtilen bozuk bölgeyi keserek ayırın.")
-                res_plotted = result.plot()[:, :, ::-1]
-                st.image(res_plotted, caption=f"Tespit Edilen: {urun_ismi} | Hasar: %{bozukluk_orani:.1f}", use_column_width=True)
+            # Kutu çizilmiş resmi göster
+            st.image(result.plot()[:, :, ::-1], caption="AI Tespiti", use_container_width=True)
 
-                # --- SINIFLANDIRMA VE TARİFLER ---
-                st.markdown("### 📋 Aksiyon Planı")
-                
-                if bozukluk_orani <= 5.0:
-                    st.success("**Kategori: Doğrudan Yeniden Dağıtım (Taze Tüketim)**")
-                    st.write("Ürün kusursuz veya kusura çok yakın. Taze olarak tüketime veya gıda bankalarına gönderilmeye tamamen uygundur.")
-                
-                elif bozukluk_orani <= 45.0:
-                    st.warning("**Kategori: Yenilebilir Geri Kazanım (Sıfır Atık İleri Dönüşüm)**")
-                    st.write("Hasarlı kısımları kestikten sonra kalan temiz bölümlerle maksimum verim elde edebileceğiniz tarifler:")
-                    
-                    # Tarif Sözlüğü
-                    tarifler = {
-                        "portakal": "**🍊 Portakal:**\n- *Kabuklar:* İnce ince dilimleyip kaynatarak sıfır atık portakal kabuğu reçeli yapabilir veya sirke içine atarak doğal yüzey temizleyici elde edebilirsiniz.\n- *İç Kısım:* Taze portakal suyu olarak sıkılabilir veya posası keklerde kullanılabilir.\n🔗 [YouTube'da Sıfır Atık Portakal Tarifleri](https://www.youtube.com/results?search_query=sifir+atik+portakal+kabugu+tarifi)",
-                        "muz": "**🍌 Muz:**\n- *Kararmış İç:* Püre haline getirip şekersiz muzlu ekmek (banana bread) yapımında kullanın veya dondurup vegan dondurma yapın.\n- *Kabuklar:* Suda 24 saat bekleterek bitkileriniz için potasyum zengini sıvı gübre elde edin.\n🔗 [YouTube'da Sıfır Atık Muz Tarifleri](https://www.youtube.com/results?search_query=kararmis+muz+degerlendirme)",
-                        "elma": "**🍏 Elma:**\n- *Kabuk ve Çekirdekler:* Bir kavanoza su ve biraz şeker ile koyarak ev yapımı elma sirkesi fermente edin.\n- *Yumuşamış İç:* Tarçınla fırınlayarak elma cipsi veya ezerek şekersiz elma püresi yapın.\n🔗 [YouTube'da Sıfır Atık Elma Tarifleri](https://www.youtube.com/results?search_query=elma+kabugu+sirkesi+tarifi)",
-                        "salatalık": "**🥒 Salatalık:**\n- *İç Kısım:* Dilimleyip limon ve nane ile detoks suyuna ekleyin veya hızlı turşu kurun.\n- *Kabuklar ve Uçlar:* Blenderdan geçirip göz altı maskesi veya ferahlatıcı cilt toniği olarak kullanın.\n🔗 [YouTube'da Sıfır Atık Salatalık Tarifleri](https://www.youtube.com/results?search_query=salatalik+degerlendirme+tarifleri)",
-                        "domates": "**🍅 Domates:**\n- *Genel Kullanım:* Yumuşamış domatesler taze tüketim için iyi olmasa da, kaynatılarak menemenlik sos, salça veya domates püresi yapmak için en lezzetli formundadır.\n🔗 [YouTube'da Yumuşamış Domates Değerlendirme](https://www.youtube.com/results?search_query=yumusamis+domates+degerlendirme)"
-                    }
-                    
-                    for urun in tespit_edilen_urunler:
-                        if urun in tarifler:
-                            st.info(tarifler[urun])
-                            
-                elif bozukluk_orani <= 80.0:
-                    st.error("**Kategori: Kompost (Organik Gübre)**")
-                    st.write(f"Bu {urun_ismi.lower()} tüketim limitlerini aşmış durumda. Lütfen doğrudan 'Kompost Modu' sekmesine geçerek bu ürünü toprağa nasıl geri kazandıracağınızı öğrenin.")
-                
-                else:
-                    st.error("**Kategori: Güvenli Olmayan Atık**")
-                    st.write("Aşırı çürüme veya küflenme tespit edildi. Eğer ev tipi Bokashi kompostu yapmıyorsanız, standart yığın kompostuna atmak patojen riski taşıyabilir. Kahverengi çöp kutusuna atın.")
+        st.markdown("---")
+        
+        # --- DİNAMİK YAPAY ZEKA TARİFLERİ ---
+        if "portakal" in tespit_edilen_urunler:
+            st.markdown("""
+            <div class="recipe-card bg-purple">
+                <div class="recipe-title">🍊 Sihirli Portakal Kabuğu Şekerlemesi</div>
+                <div class="ingredient-list">
+                    <b>Malzemeler:</b><br>
+                    🔪 3 Adet Portakalın Kabuğu<br>
+                    🧊 2 Su Bardağı Şeker<br>
+                    💧 1 Su Bardağı Su<br>
+                    🍋 Çeyrek Limon Suyu
+                </div>
+                <hr>
+                <b>Adımlar:</b>
+                <ul>
+                    <li>Portakal kabuklarını ince uzun şeritler halinde doğrayın.</li>
+                    <li>Acısını almak için suda 3 kez kaynatıp süzün.</li>
+                    <li>Şeker ve su ile hazırladığınız şerbette kabukları şeffaflaşana kadar kaynatın.</li>
+                    <li>Son olarak limon suyunu ekleyip yağlı kağıda dizerek kurutun.</li>
+                </ul>
+                <b>🎉 Sonuç:</b> Çay ve kahvenin yanında tüketebileceğiniz harika sıfır atık atıştırmalıklar!
+            </div>
+            """, unsafe_allow_html=True)
+            st.video("https://www.youtube.com/watch?v=R9_uQJ8_s5A") # Örnek YouTube Linki
 
-            elif toplam_bozuk_alan > 0:
-                st.info("Sadece hasarlı bölge algılandı, ana ürün tespit edilemedi.")
-            else:
-                st.info("Sistem bu fotoğrafta net bir ürün tanıyamadı.")
+        elif "muz" in tespit_edilen_urunler:
+            st.markdown("""
+            <div class="recipe-card bg-pink">
+                <div class="recipe-title">🍌 Rafinesiz Muzlu Vegan Dondurma</div>
+                <div class="ingredient-list">
+                    <b>Malzemeler:</b><br>
+                    🍌 2 Adet Kararmış (Çok Olgun) Muz<br>
+                    🥜 1 Yemek Kaşığı Fıstık Ezmesi<br>
+                    🍫 1 Tatlı Kaşığı Kakao<br>
+                    🥛 Yarım Çay Bardağı Süt (veya Bitkisel Süt)
+                </div>
+                <hr>
+                <b>Adımlar:</b>
+                <ul>
+                    <li>Kararmış muzların kabuklarını soyup dilimleyin ve dondurucuda 4 saat dondurun.</li>
+                    <li>Donmuş muzları blender'a alın.</li>
+                    <li>Üzerine fıstık ezmesi, kakao ve sütü ekleyip kremsi bir kıvam alana kadar çekin.</li>
+                    <li>Hemen tüketin veya tekrar dondurun.</li>
+                </ul>
+                <b>🎉 Sonuç:</b> Sıfır şekerli, suçluluk hissettirmeyen sağlıklı tatlı!
+            </div>
+            """, unsafe_allow_html=True)
+            st.video("https://www.youtube.com/watch?v=Jb-i-uL5cOE")
+            
+        elif "elma" in tespit_edilen_urunler:
+            st.markdown("""
+            <div class="recipe-card bg-mint">
+                <div class="recipe-title">🍏 Probiyotik Elma Kabuğu Sirkesi</div>
+                <div class="ingredient-list">
+                    <b>Malzemeler:</b><br>
+                    🍎 Tüketilmeyecek elma kabukları ve çekirdekleri<br>
+                    💧 1 Litre İçme Suyu<br>
+                    🍯 1 Yemek Kaşığı Bal veya Şeker<br>
+                    🫙 1 Büyük Cam Kavanoz
+                </div>
+                <hr>
+                <b>Adımlar:</b>
+                <ul>
+                    <li>Kavanozun yarısına kadar elma artıklarını doldurun.</li>
+                    <li>Üzerine suyu ve tatlandırıcıyı ekleyip tahta kaşıkla karıştırın.</li>
+                    <li>Üzerini temiz bir tülbentle kapatıp (hava almalı) karanlık bir yerde saklayın.</li>
+                    <li>İlk 10 gün her gün karıştırın. 20 gün sonra süzün.</li>
+                </ul>
+                <b>🎉 Sonuç:</b> Ev yapımı, bağışıklık güçlendirici %100 doğal sirke!
+            </div>
+            """, unsafe_allow_html=True)
+            st.video("https://www.youtube.com/watch?v=e_5aWvJ6d1c")
+
+    # --- SABİT (HER ZAMAN GÖRÜNEN) GENEL TARİFLER ---
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    st.markdown("### 📚 Fotoğraf Yüklemeden Yapabileceğiniz Klasikler")
+    st.markdown("Evinizde birikmeye başlayan her türlü sebze ve meyve için hayat kurtaran, uzun ömürlü temel teknikler.")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        <div class="recipe-card bg-blue" style="height: 450px;">
+            <div class="recipe-title">🥒 Hızlı Turşu Kurulumu</div>
+            <p>Hafif pörsümüş her türlü sebzeyi (salatalık, havuç, lahana) kurtarın.</p>
+            <div class="ingredient-list">
+                <b>Malzemeler:</b><br>
+                🫙 Cam Kavanoz<br>
+                🧅 Sarımsak & Nohut<br>
+                🧂 2 YK Kaya Tuzu<br>
+                🥃 1 Çay Bardağı Sirke<br>
+                💧 Kaynar Su
+            </div><br>
+            <p><b>Yapılışı:</b> Sebzeleri sıkıca dizin. Tuzu, sirkeyi ekleyip üzerine kaynar suyu dökün. Kapağı sıkıca kapatıp ters çevirin. 10 günde hazır!</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with col2:
+        st.markdown("""
+        <div class="recipe-card bg-pink" style="height: 450px;">
+            <div class="recipe-title">🍓 Evrensel Meyve Reçeli</div>
+            <p>Yumuşamış ve taze yenmeyecek tüm meyveler için standart formül.</p>
+            <div class="ingredient-list">
+                <b>Malzemeler:</b><br>
+                🍑 1 Ölçü Meyve<br>
+                🍚 1 Ölçü Şeker<br>
+                🍋 Çeyrek Limon Suyu
+            </div><br>
+            <br>
+            <p><b>Yapılışı:</b> Meyveleri doğrayıp akşamdan şekerle bekletin. Sabah kendi suyuyla kıvam alana kadar kaynatın. Kapatmadan hemen önce limon suyunu ekleyin.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 # ==========================================
 # SEKME 2: KOMPOST MODU
@@ -115,7 +194,6 @@ with tab2:
     st.header("Evaluate & Redirect (Kompost Modu)")
     st.markdown("Kompost dengenizi kontrol edin ve organik atıklarınızın olgunlaşma durumunu analiz edin.")
     
-    st.markdown("### 🌡️ Kompost Üretim Aşaması Hesaplayıcı")
     atilan_malzeme = st.selectbox("Komposta eklenecek ağırlıklı malzeme türü nedir?", ["Meyve/Sebze Kabukları (Yeşil - Azot)", "Kuru Yaprak/Karton (Kahverengi - Karbon)", "Kahve Telvesi (Yeşil - Azot)"])
     
     if "Yeşil" in atilan_malzeme:
@@ -123,18 +201,13 @@ with tab2:
     else:
         st.success("Kuru 'Kahverengi' malzeme ekliyorsunuz. Bu, kompostun hava almasını ve koku yapmamasını sağlayacaktır.")
         
-    st.write("**Tahmini Bekleme Süresi:** Ev tipi soğuk kompost için düzenli karıştırma ile yaklaşık **3 ila 6 ay** arası beklemeniz gerekmektedir.")
+    st.write("**Tahmini Bekleme Süresi:** Ev tipi soğuk kompost için yaklaşık **3 ila 6 ay**.")
     
-    st.markdown("---")
-    st.markdown("### 📸 Kompost Gelişim Analizi (Prototip)")
     compost_file = st.file_uploader("Kompostunuzun son durumunu fotoğraflayın", type=["jpg", "jpeg", "png"], key="compost")
-    
     if compost_file is not None:
         c_image = Image.open(compost_file)
-        st.image(c_image, caption="Yüklenen Kompost Görseli", use_column_width=True)
-        st.info("""
-        *Sistem Notu: Mevcut yapay zeka modelimiz taze gıda kurtarma üzerine eğitilmiştir. Kompostun olgunluk seviyesini, karbon/azot rengini ve nem oranını piksel tabanlı analiz edecek 'Kompost Görüntü İşleme Modeli (v2.0)' geliştirme aşamasındadır. Olgunlaşmış kompost koyu kahverengi, topraksı kokulu ve ilk atılan malzemelerin tanınmadığı bir dokuda olmalıdır.*
-        """)
+        st.image(c_image, use_container_width=True)
+        st.info("*Sistem Notu: Kompost Görüntü İşleme Modeli (v2.0) geliştirme aşamasındadır.*")
 
 # ==========================================
 # SEKME 3: EĞİTİM DESTEĞİ
@@ -142,21 +215,8 @@ with tab2:
 with tab3:
     st.header("Learn & Coach")
     st.markdown("Gönüllü eğitim rehberi ve döngüsel ekonomi bilgi bankası.")
-    
     st.markdown("""
-    ### ♻️ Neden Ayrıştırıyoruz?
-    Gıda atıkları çöpe gidip oksijensiz ortamda çürüdüklerinde, karbondioksitten 25 kat daha zararlı olan metan gazı üretirler. Amacımız, gıdayı atık olmadan yakalamaktır.
-    
     ### ⚖️ Altın Kural: Kompost Dengesi (C:N Oranı)
-    Sağlıklı bir kompost için **Karbon (Kahverengi) / Azot (Yeşil)** oranı çok önemlidir. 
-    Hacimsel olarak ortalama **%60 Kahverengi, %40 Yeşil** malzeme kuralını uygulayın.
-    
-    * **🟢 Yeşiller (Nem ve Azot kaynağı):** Meyve sebze artıkları, taze çimen, kahve telvesi, çay yaprakları.
-    * **🟤 Kahverengiler (Hava ve Karbon kaynağı):** Kuru yapraklar, dal parçaları, tuvalet kağıdı ruloları, yumurta kartonları, talaş.
-    
-    ### ❌ Komposta Asla Atılmaması Gerekenler
-    * Et, kemik ve balık ürünleri (Patojen ve haşere çeker).
-    * Süt ürünleri (Peynir, yoğurt).
-    * Yağlı ve soslu yemek artıkları.
-    * Kedi/Köpek dışkısı.
+    * **🟢 Yeşiller (Nem ve Azot kaynağı):** Meyve sebze artıkları, taze çimen, kahve telvesi.
+    * **🟤 Kahverengiler (Hava ve Karbon kaynağı):** Kuru yapraklar, yumurta kartonları, talaş.
     """)
