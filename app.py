@@ -215,8 +215,21 @@ with tab2:
 with tab3:
     st.header("Learn & Coach")
     st.markdown("Gönüllü eğitim rehberi ve döngüsel ekonomi bilgi bankası.")
+    
     st.markdown("""
+    ### ♻️ Neden Ayrıştırıyoruz?
+    Gıda atıkları çöpe gidip oksijensiz ortamda çürüdüklerinde, karbondioksitten 25 kat daha zararlı olan metan gazı üretirler. Amacımız, gıdayı atık olmadan yakalamaktır.
+    
     ### ⚖️ Altın Kural: Kompost Dengesi (C:N Oranı)
-    * **🟢 Yeşiller (Nem ve Azot kaynağı):** Meyve sebze artıkları, taze çimen, kahve telvesi.
-    * **🟤 Kahverengiler (Hava ve Karbon kaynağı):** Kuru yapraklar, yumurta kartonları, talaş.
+    Sağlıklı bir kompost için **Karbon (Kahverengi) / Azot (Yeşil)** oranı çok önemlidir. 
+    Hacimsel olarak ortalama **%60 Kahverengi, %40 Yeşil** malzeme kuralını uygulayın.
+    
+    * **🟢 Yeşiller (Nem ve Azot kaynağı):** Meyve sebze artıkları, taze çimen, kahve telvesi, çay yaprakları.
+    * **🟤 Kahverengiler (Hava ve Karbon kaynağı):** Kuru yapraklar, dal parçaları, tuvalet kağıdı ruloları, yumurta kartonları, talaş.
+    
+    ### ❌ Komposta Asla Atılmaması Gerekenler
+    * Et, kemik ve balık ürünleri (Patojen ve haşere çeker).
+    * Süt ürünleri (Peynir, yoğurt).
+    * Yağlı ve soslu yemek artıkları.
+    * Kedi/Köpek dışkısı.
     """)
