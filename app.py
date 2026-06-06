@@ -107,29 +107,37 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* --- MOBİL İÇİN TEK SIRA GALERİ DÜZELTMESİ --- */
-    @media (max-width: 768px) {
-        /* İçinde 3'ten fazla kolon barındıran yatay blokları (yani galeriyi) alt alta indirme, tek sırada tut */
-        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) {
-            flex-wrap: nowrap !important;
-            overflow-x: hidden !important;
-        }
-        /* Her bir fotoğrafın genişliğini %18'e sabitle ki 5 tanesi yan yana ekrana tam sığsın ve küçülsün */
-        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) > div[data-testid="column"] {
-            min-width: 18% !important;
-            width: 18% !important;
-            flex: 1 1 0px !important;
-            padding: 0 3px !important;
-        }
-        /* Seç butonunu boyutlara uyum sağlaması için iyice küçült */
-        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) button {
-            padding: 0px !important;
-            min-height: 22px !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) button p {
-            font-size: 10px !important;
-            line-height: 1 !important;
-        }
+    /* --- MOBİL VE PC İÇİN TEK SIRA MİNİ GALERİ DÜZELTMESİ --- */
+    /* İçinde 4'ten fazla kolon barındıran yatay blokları (galeriyi) tek sıra yap */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4)) {
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        gap: 6px !important;
+        padding-bottom: 10px !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4)) > div[data-testid="column"] {
+        min-width: 50px !important; /* Çok küçültüldü */
+        max-width: 60px !important; 
+        flex: 0 0 auto !important;
+    }
+    /* Seç butonu küçültme */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4)) button {
+        padding: 0px !important;
+        min-height: 20px !important;
+        margin-top: -5px !important;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4)) button p {
+        font-size: 10px !important;
+        line-height: 1 !important;
+    }
+    /* Scrollbar tasarımı */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4))::-webkit-scrollbar {
+        height: 6px;
+    }
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4))::-webkit-scrollbar-thumb {
+        background-color: #A8C9B4;
+        border-radius: 10px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -175,30 +183,22 @@ with tab1:
     if "secilen_ornek" not in st.session_state:
         st.session_state.secilen_ornek = None
 
-    ornek_kategoriler = {
-        "🥀 Çürümüş (Kompostluk)": [
-            "curumus_elma.png", "curumus_muz.png", "curumus_portakal.png", "curumus_domates.jpg", "curumus_salatalik.png"
-        ],
-        "🤕 Kurtarılabilir (Tariflik)": [
-            "kurtarilabilecek_elma.png", "kurtarilabilecek_muz.png", "kurtarilabilecek_portakal.png", "kurtarilabilecek_domates.jpg", "kurtarilabilecek_salatalik.png"
-        ],
-        "✨ Taze (Doğrudan Tüketim)": [
-            "taze_elma.png", "taze_muz.png", "taze_portakal.png", "taze_domates.png", "taze_salatalik.png"
-        ]
-    }
+    tum_fotolar = [
+        "curumus_elma.png", "curumus_muz.png", "curumus_portakal.png", "curumus_domates.jpg", "curumus_salatalik.png",
+        "kurtarilabilecek_elma.png", "kurtarilabilecek_muz.png", "kurtarilabilecek_portakal.png", "kurtarilabilecek_domates.jpg", "kurtarilabilecek_salatalik.png",
+        "taze_elma.png", "taze_muz.png", "taze_portakal.png", "taze_domates.png", "taze_salatalik.png"
+    ]
+    
+    mevcut_fotolar = [f for f in tum_fotolar if os.path.exists(f)]
 
-    st.markdown("<p style='text-align:center; font-size:16px; font-weight:bold; color:#A8C9B4; margin-bottom:15px;'>Deneyebileceğiniz Test Fotoğrafları:</p>", unsafe_allow_html=True)
-
-    for kategori_adi, fotolar in ornek_kategoriler.items():
-        mevcut_fotolar = [f for f in fotolar if os.path.exists(f)]
-        if mevcut_fotolar:
-            st.markdown(f"<p style='font-size:14px; font-weight:bold; color:#555; margin-bottom:5px; margin-top:10px;'>{kategori_adi}</p>", unsafe_allow_html=True)
-            galeri_kolonlari = st.columns(len(mevcut_fotolar))
-            for i, ornek_foto in enumerate(mevcut_fotolar):
-                with galeri_kolonlari[i]:
-                    st.image(ornek_foto, use_container_width=True)
-                    if st.button("👆 Seç", key=f"sec_{ornek_foto}", use_container_width=True):
-                        st.session_state.secilen_ornek = ornek_foto
+    if mevcut_fotolar:
+        st.markdown("<p style='text-align:center; font-size:14px; font-weight:bold; color:#A8C9B4; margin-bottom:10px;'>Deneyebileceğiniz Test Fotoğrafları (Sağa Kaydırabilirsiniz):</p>", unsafe_allow_html=True)
+        galeri_kolonlari = st.columns(len(mevcut_fotolar))
+        for i, ornek_foto in enumerate(mevcut_fotolar):
+            with galeri_kolonlari[i]:
+                st.image(ornek_foto, use_container_width=True)
+                if st.button("Seç", key=f"sec_{ornek_foto}", use_container_width=True):
+                    st.session_state.secilen_ornek = ornek_foto
                     
     st.markdown("<br>", unsafe_allow_html=True)
     # --- ÖRNEK FOTOĞRAF GALERİSİ BİTİŞİ ---
