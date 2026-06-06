@@ -109,26 +109,25 @@ st.markdown("""
 
     /* --- MOBİL İÇİN TEK SIRA GALERİ DÜZELTMESİ --- */
     @media (max-width: 768px) {
-        /* Mobilde Streamlit'in kolonları alt alta atmasını (flex-direction: column) engeller, yan yana tutar */
+        /* İçinde 3'ten fazla kolon barındıran yatay blokları (yani galeriyi) alt alta indirme, tek sırada tut */
         div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) {
-            flex-direction: row !important;
             flex-wrap: nowrap !important;
             overflow-x: hidden !important;
         }
-        /* Her fotoğrafın ekrana sığmasını sağlar */
+        /* Her bir fotoğrafın genişliğini %18'e sabitle ki 5 tanesi yan yana ekrana tam sığsın ve küçülsün */
         div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) > div[data-testid="column"] {
-            width: 19% !important;
-            min-width: 19% !important;
-            flex: 1 1 19% !important;
-            padding: 0 2px !important;
+            min-width: 18% !important;
+            width: 18% !important;
+            flex: 1 1 0px !important;
+            padding: 0 3px !important;
         }
-        /* Seç butonunu mobilde iyice küçült */
+        /* Seç butonunu boyutlara uyum sağlaması için iyice küçült */
         div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) button {
             padding: 0px !important;
-            min-height: 20px !important;
+            min-height: 22px !important;
         }
         div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) button p {
-            font-size: 9px !important;
+            font-size: 10px !important;
             line-height: 1 !important;
         }
     }
