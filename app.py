@@ -107,41 +107,59 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* --- MOBİL VE PC İÇİN TEK SIRA TIKLANABİLİR MİNİ GALERİ DÜZELTMESİ --- */
-    /* İçinde 10'dan fazla kolon barındıran yatay blokları (galeriyi) tek sıra yap ve kaydırılabilir kıl */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10)) {
+    /* --- Gelişmiş Mobil ve PC Tek Sıra Galeri CSS Kuralları --- */
+    /* 5'ten fazla kolona sahip yatay bloğu bul, mobilde dahi asla alt alta dizme (wrap etme) */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="column"]:nth-child(5)) {
+        display: flex !important;
+        flex-direction: row !important;
         flex-wrap: nowrap !important;
         overflow-x: auto !important;
         overflow-y: hidden !important;
-        gap: 8px !important;
-        padding-bottom: 10px !important;
+        gap: 6px !important;
+        padding: 5px 0 12px 0 !important;
+        width: 100% !important;
         -webkit-overflow-scrolling: touch;
     }
-    /* Her bir fotoğraf kolonunu sabitle (çok küçük kare yap) ve relative yap */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10)) > div[data-testid="column"] {
-        min-width: 65px !important;
-        max-width: 65px !important;
-        flex: 0 0 auto !important;
+    
+    /* Her bir fotoğraf kolonunun genişliğini hem pc hem mobilde 55px boyutuna sabitle */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="column"]:nth-child(5)) > div[data-testid="column"] {
         position: relative !important;
+        flex: 0 0 55px !important;
+        min-width: 55px !important;
+        max-width: 55px !important;
+        width: 55px !important;
+        height: 55px !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
-    /* Fotoğrafın kendisini kare yapıp köşeleri yumuşat */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10)) img {
-        width: 65px !important;
-        height: 65px !important;
+
+    /* Gereksiz streamlit iç boşluklarını ve eleman kutusu marjinlerini sıfırla */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="column"]:nth-child(5)) div[data-testid="element-container"] {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Fotoğrafları tam kare yap ve sınırları eşitle */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="column"]:nth-child(5)) img {
+        width: 55px !important;
+        height: 55px !important;
         object-fit: cover !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important;
+        border: 1px solid #A8C9B4 !important;
     }
-    /* Buton container'ını fotoğrafın tam üzerine bindir */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10)) div[data-testid="stButton"] {
+
+    /* Butonu tamamen şeffaf yapıp resmin üzerine görünmez bir maske gibi kapla */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="column"]:nth-child(5)) div[data-testid="stButton"] {
         position: absolute !important;
         top: 0 !important;
         left: 0 !important;
         width: 100% !important;
         height: 100% !important;
-        z-index: 10 !important;
+        z-index: 999 !important;
     }
-    /* Butonu tamamen görünmez yap ama tıklanabilir bırak (Resme tıklandığında buton çalışır) */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10)) button {
+
+    /* Butonun tüm sınır çizgilerini, gölgelerini ve arka plan yazı renklerini görünmez kıl */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="column"]:nth-child(5)) button {
         width: 100% !important;
         height: 100% !important;
         background: transparent !important;
@@ -151,16 +169,21 @@ st.markdown("""
         padding: 0 !important;
         margin: 0 !important;
     }
-    /* Fare ile fotoğrafın üzerine gelince çok hafif beyazlık (tıklanma hissi) ver */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10)) button:hover {
+
+    /* Tıklama veya dokunma esnasında butonun çirkin mavi çerçeve çıkarmasını engelle */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="column"]:nth-child(5)) button:focus,
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="column"]:nth-child(5)) button:active {
         background: rgba(255, 255, 255, 0.2) !important;
-        border-radius: 8px !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: transparent !important;
     }
-    /* Scrollbar tasarımı */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10))::-webkit-scrollbar {
-        height: 6px;
+
+    /* İnce kaydırma çubuğu tasarımı */
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="column"]:nth-child(5))::-webkit-scrollbar {
+        height: 4px;
     }
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10))::-webkit-scrollbar-thumb {
+    div[data-testid="stHorizontalBlock"]:has(div[data-testid="column"]:nth-child(5))::-webkit-scrollbar-thumb {
         background-color: #A8C9B4;
         border-radius: 10px;
     }
@@ -217,12 +240,12 @@ with tab1:
     mevcut_fotolar = [f for f in tum_fotolar if os.path.exists(f)]
 
     if mevcut_fotolar:
-        st.markdown("<p style='text-align:center; font-size:14px; font-weight:bold; color:#A8C9B4; margin-bottom:10px;'>Deneyebileceğiniz Test Fotoğrafları (Tıklayın veya Kaydırın):</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; font-size:14px; font-weight:bold; color:#A8C9B4; margin-bottom:10px;'>Deneyebileceğiniz Test Fotoğrafları (Doğrudan Fotoğrafa Tıklayın):</p>", unsafe_allow_html=True)
         galeri_kolonlari = st.columns(len(mevcut_fotolar))
         for i, ornek_foto in enumerate(mevcut_fotolar):
             with galeri_kolonlari[i]:
                 st.image(ornek_foto, use_container_width=True)
-                # Buton text'i boş bırakıldı, CSS ile buton fotoğrafın üstüne görünmez olarak bindirildi
+                # Buton text alanı boş bırakıldı, CSS görünmez yapıp resmin üzerine yaydı
                 if st.button(" ", key=f"sec_{ornek_foto}", use_container_width=True):
                     st.session_state.secilen_ornek = ornek_foto
                     
@@ -330,7 +353,7 @@ with tab1:
                         <ul>
                             <li>Portakal kabuklarını ince uzun şeritler halinde doğrayın.</li>
                             <li>Acısını almak için suda 3 kez kaynatıp süzün.</li>
-                            <li>Şeker ve su ile hazırladığınız şerbette kabukları şeffaflaşana kadar kaynatın.</li>
+                            <li>Şeker og su ile hazırladığınız şerbette kabukları şeffaflaşana kadar kaynatın.</li>
                             <li>Son olarak limon suyunu ekleyip yağlı kağıda dizerek kurutun.</li>
                         </ul>
                     </div>
@@ -371,7 +394,7 @@ with tab1:
                         <hr>
                         <b>Adımlar:</b>
                         <ul>
-                            <li>Kararmış muzların kabuklarını soyup dilimleyin ve dondurucuda 4 saat dondurun.</li>
+                            <li>Kararmış muzların kabuklarını soyup dilimleyin og dondurucuda 4 saat dondurun.</li>
                             <li>Donmuş muzları blender'a alın.</li>
                             <li>Üzerine fıstık ezmesi, kakao ve sütü ekleyip kremsi bir kıvam alana kadar çekin.</li>
                         </ul>
@@ -555,7 +578,7 @@ with tab1:
         st.markdown("""
         <div class="recipe-card bg-mint">
             <div class="recipe-title">🍵 Atık Sebze Suyu (Bulyon)</div>
-            <p>Yemek yaparken ayırdığınız yıkanmış sebze kabuklarını ve köklerini değerlendirin.</p>
+            <p>Yemek yaparken ayırdığınız yıkanmış sebze kabuklarını og köklerini değerlendirin.</p>
             <div class="ingredient-list">
                 <b>Malzemeler:</b><br>
                 🥬 Biriktirilmiş Sebze Artıkları (Havuç ucu, soğan kabuğu vb.)<br>
@@ -665,7 +688,7 @@ with tab3:
         Sağlıklı ve kokusuz bir kompost üretimi için <b>Karbon (Kahverengi atıklar) / Azot (Yeşil atıklar)</b> dengesi hayati önem taşır. İdeal hacimsel oran <b>%60 Kahverengi, %40 Yeşil</b> malzemedir.<br><br>
         <ul>
             <li><b>🟢 Yeşiller (Nem, Azot ve Protein Kaynağı):</b> Meyve ve sebze artıkları, taze çimen, kahve telvesi, çay yaprakları. Süreci hızlandırır ancak fazla olursa koku ve balçıklaşmaya yol açar.</li>
-            <li><b>🟤 Kahverengiler (Hava, Karbon ve Enerji Kaynağı):</b> Kuru yapraklar, dal parçaları, tuvalet kağıdı ruloları, talaş, parçalanmış kartonlar. Yığının hava almasını sağlar, fazla olursa süreci yavaşlatır.</li>
+            <li><b>🟤 Kahverengiler (Hava, Karbon og Enerji Kaynağı):</b> Kuru yapraklar, dal parçaları, tuvalet kağıdı ruloları, talaş, parçalanmış kartonlar. Yığının hava almasını sağlar, fazla olursa süreci yavaşlatır.</li>
         </ul>
         <b>Nem ve Oksijen Kontrolü:</b> Kompostunuz bir sünger gibi nemli olmalı ancak sıkıldığında su damlatmamalıdır. Haftada bir karıştırarak mikroorganizmalar için gerekli oksijeni sağlamalısınız.
         </div>
