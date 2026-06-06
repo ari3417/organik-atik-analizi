@@ -162,17 +162,18 @@ with tab1:
         ]
     }
 
-    st.markdown("<p style='text-align:center; font-size:16px; font-weight:bold; color:#A8C9B4; margin-bottom:15px;'>Deneyebileceğiniz Test Fotoğrafları:</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center; font-size:16px; font-weight:bold; color:#A8C9B4; margin-bottom:5px;'>Deneyebileceğiniz Test Fotoğrafları:</p>", unsafe_allow_html=True)
 
     for kategori_adi, fotolar in ornek_kategoriler.items():
         mevcut_fotolar = [f for f in fotolar if os.path.exists(f)]
         if mevcut_fotolar:
             st.markdown(f"<p style='font-size:14px; font-weight:bold; color:#555; margin-bottom:5px; margin-top:10px;'>{kategori_adi}</p>", unsafe_allow_html=True)
-            galeri_kolonlari = st.columns(len(mevcut_fotolar))
+            # Fotoğrafları küçültmek için daha dar sütunlara bölüyoruz (8'e böldük)
+            galeri_kolonlari = st.columns(8)
             for i, ornek_foto in enumerate(mevcut_fotolar):
                 with galeri_kolonlari[i]:
                     st.image(ornek_foto, use_container_width=True)
-                    if st.button("👆 Seç", key=f"sec_{ornek_foto}", use_container_width=True):
+                    if st.button("Seç", key=f"sec_{ornek_foto}", use_container_width=True):
                         st.session_state.secilen_ornek = ornek_foto
                     
     st.markdown("<br>", unsafe_allow_html=True)
