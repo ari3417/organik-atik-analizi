@@ -106,6 +106,31 @@ st.markdown("""
         margin-top: 10px;
         letter-spacing: 1px;
     }
+
+    /* --- MOBİL İÇİN TEK SIRA GALERİ DÜZELTMESİ --- */
+    @media (max-width: 768px) {
+        /* İçinde 3'ten fazla kolon barındıran yatay blokları (yani galeriyi) alt alta indirme, tek sırada tut */
+        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) {
+            flex-wrap: nowrap !important;
+            overflow-x: hidden !important;
+        }
+        /* Her bir fotoğrafın genişliğini %18'e sabitle ki 5 tanesi yan yana ekrana tam sığsın ve küçülsün */
+        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) > div[data-testid="column"] {
+            min-width: 18% !important;
+            width: 18% !important;
+            flex: 1 1 0px !important;
+            padding: 0 3px !important;
+        }
+        /* Seç butonunu boyutlara uyum sağlaması için iyice küçült */
+        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) button {
+            padding: 0px !important;
+            min-height: 22px !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) button p {
+            font-size: 10px !important;
+            line-height: 1 !important;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -162,18 +187,17 @@ with tab1:
         ]
     }
 
-    st.markdown("<p style='text-align:center; font-size:16px; font-weight:bold; color:#A8C9B4; margin-bottom:5px;'>Deneyebileceğiniz Test Fotoğrafları:</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center; font-size:16px; font-weight:bold; color:#A8C9B4; margin-bottom:15px;'>Deneyebileceğiniz Test Fotoğrafları:</p>", unsafe_allow_html=True)
 
     for kategori_adi, fotolar in ornek_kategoriler.items():
         mevcut_fotolar = [f for f in fotolar if os.path.exists(f)]
         if mevcut_fotolar:
             st.markdown(f"<p style='font-size:14px; font-weight:bold; color:#555; margin-bottom:5px; margin-top:10px;'>{kategori_adi}</p>", unsafe_allow_html=True)
-            # Fotoğrafları küçültmek için daha dar sütunlara bölüyoruz (8'e böldük)
-            galeri_kolonlari = st.columns(8)
+            galeri_kolonlari = st.columns(len(mevcut_fotolar))
             for i, ornek_foto in enumerate(mevcut_fotolar):
                 with galeri_kolonlari[i]:
                     st.image(ornek_foto, use_container_width=True)
-                    if st.button("Seç", key=f"sec_{ornek_foto}", use_container_width=True):
+                    if st.button("👆 Seç", key=f"sec_{ornek_foto}", use_container_width=True):
                         st.session_state.secilen_ornek = ornek_foto
                     
     st.markdown("<br>", unsafe_allow_html=True)
