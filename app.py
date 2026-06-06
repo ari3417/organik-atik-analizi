@@ -141,16 +141,56 @@ with tab1:
     uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"], key="scanner", label_visibility="collapsed")
     
     st.markdown("""
-    <div style="font-size: 14px; color: #555; margin-top: 15px; margin-bottom: 30px; line-height: 1.4; text-align: center;">
+    <div style="font-size: 14px; color: #555; margin-top: 15px; margin-bottom: 10px; line-height: 1.4; text-align: center;">
         Yumuşamış veya hasar görmüş meyvenizin fotoğrafını yükleyin, sistem onu tanıp size özel harika bir sıfır atık tarifi sunsun.
     </div>
     """, unsafe_allow_html=True)
 
+    # --- ÖRNEK FOTOĞRAF GALERİSİ BAŞLANGICI ---
+    if "secilen_ornek" not in st.session_state:
+        st.session_state.secilen_ornek = None
+
+    ornek_kategoriler = {
+        "🥀 Çürümüş (Kompostluk)": [
+            "curumus_elma.png", "curumus_muz.png", "curumus_portakal.png", "curumus_domates.jpg", "curumus_salatalik.png"
+        ],
+        "🤕 Kurtarılabilir (Tariflik)": [
+            "kurtarilabilecek_elma.png", "kurtarilabilecek_muz.png", "kurtarilabilecek_portakal.png", "kurtarilabilecek_domates.jpg", "kurtarilabilecek_salatalik.png"
+        ],
+        "✨ Taze (Doğrudan Tüketim)": [
+            "taze_elma.png", "taze_muz.png", "taze_portakal.png", "taze_domates.png", "taze_salatalik.png"
+        ]
+    }
+
+    st.markdown("<p style='text-align:center; font-size:16px; font-weight:bold; color:#A8C9B4; margin-bottom:15px;'>Deneyebileceğiniz Test Fotoğrafları:</p>", unsafe_allow_html=True)
+
+    for kategori_adi, fotolar in ornek_kategoriler.items():
+        mevcut_fotolar = [f for f in fotolar if os.path.exists(f)]
+        if mevcut_fotolar:
+            st.markdown(f"<p style='font-size:14px; font-weight:bold; color:#555; margin-bottom:5px; margin-top:10px;'>{kategori_adi}</p>", unsafe_allow_html=True)
+            galeri_kolonlari = st.columns(len(mevcut_fotolar))
+            for i, ornek_foto in enumerate(mevcut_fotolar):
+                with galeri_kolonlari[i]:
+                    st.image(ornek_foto, use_container_width=True)
+                    if st.button("👆 Seç", key=f"sec_{ornek_foto}", use_container_width=True):
+                        st.session_state.secilen_ornek = ornek_foto
+                    
+    st.markdown("<br>", unsafe_allow_html=True)
+    # --- ÖRNEK FOTOĞRAF GALERİSİ BİTİŞİ ---
+
     # Alt Panel: İki büyük sarı kutu
     col1, col2 = st.columns(2, gap="large")
 
+    # İşlenecek Görüntü Mantığı (Kullanıcı kendi mi yükledi, yoksa örnek mi seçti?)
+    islenecek_resim = None
+    if uploaded_file is not None:
+        islenecek_resim = Image.open(uploaded_file)
+        st.session_state.secilen_ornek = None # Kendisi yüklerse örnek seçimi sıfırla
+    elif st.session_state.secilen_ornek is not None:
+        islenecek_resim = Image.open(st.session_state.secilen_ornek)
+
     # Görüntü Kutuları Yönetimi
-    if uploaded_file is None:
+    if islenecek_resim is None:
         with col1:
             st.markdown('<div class="mustard-box">Seçilen fotoğraf</div>', unsafe_allow_html=True)
         with col2:
@@ -159,7 +199,7 @@ with tab1:
         st.markdown('<div class="action-banner">AKSİYON PLANI (HASAR ORANI: - )</div>', unsafe_allow_html=True)
 
     else:
-        image = Image.open(uploaded_file)
+        image = islenecek_resim
         img_b64 = image_to_base64(image)
         
         st.write("🔄 Yapay zeka görüntüyü işliyor...")
