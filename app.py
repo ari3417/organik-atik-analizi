@@ -107,35 +107,60 @@ st.markdown("""
         letter-spacing: 1px;
     }
 
-    /* --- MOBİL VE PC İÇİN TEK SIRA MİNİ GALERİ DÜZELTMESİ --- */
-    /* İçinde 4'ten fazla kolon barındıran yatay blokları (galeriyi) tek sıra yap */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4)) {
+    /* --- MOBİL VE PC İÇİN TEK SIRA TIKLANABİLİR MİNİ GALERİ DÜZELTMESİ --- */
+    /* İçinde 10'dan fazla kolon barındıran yatay blokları (galeriyi) tek sıra yap ve kaydırılabilir kıl */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10)) {
         flex-wrap: nowrap !important;
         overflow-x: auto !important;
-        gap: 6px !important;
+        overflow-y: hidden !important;
+        gap: 8px !important;
         padding-bottom: 10px !important;
         -webkit-overflow-scrolling: touch;
     }
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4)) > div[data-testid="column"] {
-        min-width: 50px !important; /* Çok küçültüldü */
-        max-width: 60px !important; 
+    /* Her bir fotoğraf kolonunu sabitle (çok küçük kare yap) ve relative yap */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10)) > div[data-testid="column"] {
+        min-width: 65px !important;
+        max-width: 65px !important;
         flex: 0 0 auto !important;
+        position: relative !important;
     }
-    /* Seç butonu küçültme */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4)) button {
-        padding: 0px !important;
-        min-height: 20px !important;
-        margin-top: -5px !important;
+    /* Fotoğrafın kendisini kare yapıp köşeleri yumuşat */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10)) img {
+        width: 65px !important;
+        height: 65px !important;
+        object-fit: cover !important;
+        border-radius: 8px !important;
     }
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4)) button p {
-        font-size: 10px !important;
-        line-height: 1 !important;
+    /* Buton container'ını fotoğrafın tam üzerine bindir */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10)) div[data-testid="stButton"] {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 10 !important;
+    }
+    /* Butonu tamamen görünmez yap ama tıklanabilir bırak (Resme tıklandığında buton çalışır) */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10)) button {
+        width: 100% !important;
+        height: 100% !important;
+        background: transparent !important;
+        color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    /* Fare ile fotoğrafın üzerine gelince çok hafif beyazlık (tıklanma hissi) ver */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10)) button:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-radius: 8px !important;
     }
     /* Scrollbar tasarımı */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4))::-webkit-scrollbar {
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10))::-webkit-scrollbar {
         height: 6px;
     }
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(4))::-webkit-scrollbar-thumb {
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(10))::-webkit-scrollbar-thumb {
         background-color: #A8C9B4;
         border-radius: 10px;
     }
@@ -192,12 +217,13 @@ with tab1:
     mevcut_fotolar = [f for f in tum_fotolar if os.path.exists(f)]
 
     if mevcut_fotolar:
-        st.markdown("<p style='text-align:center; font-size:14px; font-weight:bold; color:#A8C9B4; margin-bottom:10px;'>Deneyebileceğiniz Test Fotoğrafları (Sağa Kaydırabilirsiniz):</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; font-size:14px; font-weight:bold; color:#A8C9B4; margin-bottom:10px;'>Deneyebileceğiniz Test Fotoğrafları (Tıklayın veya Kaydırın):</p>", unsafe_allow_html=True)
         galeri_kolonlari = st.columns(len(mevcut_fotolar))
         for i, ornek_foto in enumerate(mevcut_fotolar):
             with galeri_kolonlari[i]:
                 st.image(ornek_foto, use_container_width=True)
-                if st.button("Seç", key=f"sec_{ornek_foto}", use_container_width=True):
+                # Buton text'i boş bırakıldı, CSS ile buton fotoğrafın üstüne görünmez olarak bindirildi
+                if st.button(" ", key=f"sec_{ornek_foto}", use_container_width=True):
                     st.session_state.secilen_ornek = ornek_foto
                     
     st.markdown("<br>", unsafe_allow_html=True)
