@@ -93,18 +93,56 @@ st.markdown("""
         margin-top: 10px; letter-spacing: 1px; font-family: sans-serif;
     }
 
+    /* ==========================================
+       HIZLI TEST GALERİSİ (TEK SIRA VE TIKLANABİLİR FOTOĞRAFLAR)
+       ========================================== */
+    div.gallery-target + div[data-testid="stHorizontalBlock"] {
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important; /* Gerekirse yatay kaydırma */
+        padding-bottom: 8px !important;
+        gap: 6px !important;
+        -ms-overflow-style: none;  /* IE and Edge için scrollbar gizle */
+        scrollbar-width: none;  /* Firefox için scrollbar gizle */
+    }
+    div.gallery-target + div[data-testid="stHorizontalBlock"]::-webkit-scrollbar {
+        display: none; /* Chrome/Safari için scrollbar gizle */
+    }
+    div.gallery-target + div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+        position: relative !important;
+        flex: 1 1 0px !important;
+        min-width: 0 !important; 
+    }
+    
+    /* Fotoğrafların üzerine gelen görünmez tıklama butonu */
+    div.gallery-target + div[data-testid="stHorizontalBlock"] > div[data-testid="column"] div[data-testid="stButton"] {
+        position: absolute !important;
+        top: 0 !important; left: 0 !important;
+        width: 100% !important; height: 100% !important;
+        z-index: 10 !important;
+        margin: 0 !important; padding: 0 !important;
+    }
+    div.gallery-target + div[data-testid="stHorizontalBlock"] > div[data-testid="column"] div[data-testid="stButton"] button {
+        width: 100% !important; height: 100% !important;
+        opacity: 0 !important; /* Buton tamamen görünmez */
+        cursor: pointer !important;
+        padding: 0 !important; border: none !important;
+    }
+    
+    /* Hover efekti (Fare ile üzerine gelince belirginleşsin) */
+    div.gallery-target + div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:hover img {
+        transform: scale(1.05);
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        transition: 0.2s ease-in-out;
+    }
+
+    /* Mobilde yan yana tutmaya zorla */
     @media (max-width: 768px) {
-        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) {
-            flex-direction: row !important; flex-wrap: nowrap !important; overflow-x: hidden !important;
+        div.gallery-target + div[data-testid="stHorizontalBlock"] {
+            flex-direction: row !important;
         }
-        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) > div[data-testid="column"] {
-            width: 19% !important; min-width: 19% !important; flex: 1 1 19% !important; padding: 0 2px !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) button {
-            padding: 0px !important; min-height: 20px !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(3)) button p {
-            font-size: 9px !important; line-height: 1 !important;
+        div.gallery-target + div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+            min-width: 45px !important; /* Mobilde parmakla tıklanabilecek minimum boyut */
         }
     }
 
@@ -334,7 +372,8 @@ def analyze_compost_image(img, c_type, start, age, stage, last_t, days_since, da
     {{ "health_score": 0, "moisture": "Kuru|Optimal|Islak", "balance": "Karbon Fazla|Dengeli|Azot Fazla", "ready_in": "2-3 ay", "current_status": "Tr sentence", "moisture_check": "Tr sentence", "carbon_nitrogen_note": "Tr sentence", "issue": "Short tr issue", "detected_problems": ["Tr bullet 1"], "recommendations": ["Tr action 1"], "coach_note": "Tr note" }}
     Data: Type:{c_type}, Age:{age} days, Stage:{stage}, Next turn in:{days_until} days, Odor:{odor}"""
     resp = model.generate_content([prompt, img])
-    cleaned = resp.text.strip().replace("```json", "").replace("```", "").strip()
+    cleaned = resp.text.strip().replace("```json", "").replace("
+```", "").strip()
     match = re.search(r"\{.*\}", cleaned, flags=re.DOTALL)
     if match: cleaned = match.group(0)
     return normalize_ai_data(json.loads(cleaned))
@@ -430,30 +469,26 @@ with tab1:
     if "secilen_ornek" not in st.session_state:
         st.session_state.secilen_ornek = None
 
-    ornek_kategoriler = {
-        "🥀 Çürümüş (Kompostluk)": [
-            "curumus_elma.png", "curumus_muz.png", "curumus_portakal.png", "curumus_domates.jpg", "curumus_salatalik.png"
-        ],
-        "🤕 Kurtarılabilir (Tariflik)": [
-            "kurtarilabilecek_elma.png", "kurtarilabilecek_muz.png", "kurtarilabilecek_portakal.png", "kurtarilabilecek_domates.jpg", "kurtarilabilecek_salatalik.png"
-        ],
-        "✨ Taze (Doğrudan Tüketim)": [
-            "taze_elma.png", "taze_muz.png", "taze_portakal.png", "taze_domates.png", "taze_salatalik.png"
-        ]
-    }
+    tum_ornek_fotolar = [
+        "curumus_elma.png", "curumus_muz.png", "curumus_portakal.png", "curumus_domates.jpg", "curumus_salatalik.png",
+        "kurtarilabilecek_elma.png", "kurtarilabilecek_muz.png", "kurtarilabilecek_portakal.png", "kurtarilabilecek_domates.jpg", "kurtarilabilecek_salatalik.png",
+        "taze_elma.png", "taze_muz.png", "taze_portakal.png", "taze_domates.png", "taze_salatalik.png"
+    ]
 
-    st.markdown("<p style='text-align:center; font-size:16px; font-weight:bold; color:#A8C9B4; margin-bottom:15px;'>Deneyebileceğiniz Test Fotoğrafları:</p>", unsafe_allow_html=True)
+    mevcut_fotolar = [f for f in tum_ornek_fotolar if os.path.exists(f)]
 
-    for kategori_adi, fotolar in ornek_kategoriler.items():
-        mevcut_fotolar = [f for f in fotolar if os.path.exists(f)]
-        if mevcut_fotolar:
-            st.markdown(f"<p style='font-size:14px; font-weight:bold; color:#555; margin-bottom:5px; margin-top:10px;'>{kategori_adi}</p>", unsafe_allow_html=True)
-            galeri_kolonlari = st.columns(len(mevcut_fotolar))
-            for i, ornek_foto in enumerate(mevcut_fotolar):
-                with galeri_kolonlari[i]:
-                    st.image(ornek_foto, use_container_width=True)
-                    if st.button("👆 Seç", key=f"sec_{ornek_foto}", use_container_width=True):
-                        st.session_state.secilen_ornek = ornek_foto
+    if mevcut_fotolar:
+        st.markdown("<p style='text-align:center; font-size:13px; font-weight:bold; color:#A8C9B4; margin-bottom:5px;'>Hızlı Taramak İçin Fotoğraflardan Birine Tıklayın:</p>", unsafe_allow_html=True)
+        
+        st.markdown('<div class="gallery-target"></div>', unsafe_allow_html=True)
+        galeri_kolonlari = st.columns(len(mevcut_fotolar))
+        
+        for i, ornek_foto in enumerate(mevcut_fotolar):
+            with galeri_kolonlari[i]:
+                st.image(ornek_foto, use_container_width=True)
+                # Görünmez buton - CSS ile fotoğrafın üzerini tamamen kaplar
+                if st.button(" ", key=f"sec_{ornek_foto}", use_container_width=True):
+                    st.session_state.secilen_ornek = ornek_foto
                     
     st.markdown("<br>", unsafe_allow_html=True)
     # --- ÖRNEK FOTOĞRAF GALERİSİ BİTİŞİ ---
