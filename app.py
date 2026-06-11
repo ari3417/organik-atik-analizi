@@ -96,71 +96,65 @@ st.markdown("""
     /* ==========================================
        HIZLI TEST GALERİSİ (TEK SIRA VE TAM TIKLANABİLİR)
        ========================================== */
-    div.gallery-target + div[data-testid="stHorizontalBlock"] {
+    
+    /* 5'ten fazla kolonu olan yatay bloğu (galeriyi) yakala ve tek sıraya kilitle */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) {
         flex-wrap: nowrap !important;
         overflow-x: auto !important; 
-        padding-bottom: 8px !important;
-        gap: 6px !important;
-        -ms-overflow-style: none;  
-        scrollbar-width: none;  
-    }
-    div.gallery-target + div[data-testid="stHorizontalBlock"]::-webkit-scrollbar {
-        display: none; 
-    }
-    div.gallery-target + div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-        position: relative !important;
-        flex: 1 1 0px !important;
-        min-width: 0 !important; 
+        padding-bottom: 15px !important;
+        gap: 8px !important;
     }
     
-    /* Hover efekti (Fare ile gelince büyüsün) */
-    div.gallery-target + div[data-testid="stHorizontalBlock"] img {
-        transition: 0.2s ease-in-out;
-        border-radius: 8px;
+    /* İnce yatay kaydırma çubuğu tasarımı */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5))::-webkit-scrollbar {
+        height: 6px;
     }
-    div.gallery-target + div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:hover img {
-        transform: scale(1.05);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5))::-webkit-scrollbar-thumb {
+        background-color: #A8C9B4;
+        border-radius: 10px;
     }
 
-    /* --- GÖRÜNMEZ BUTON MERKEZİ (TAM KAPSAMA) --- */
-    div.gallery-target + div[data-testid="stHorizontalBlock"] .stButton,
-    div.gallery-target + div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] {
+    /* Her bir fotoğraf kolonunun boyutunu sabitle (Mobilde ve masaüstünde aynı mantık çalışır) */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) > div[data-testid="column"] {
+        min-width: 65px !important; 
+        max-width: 80px !important;
+        flex: 0 0 auto !important;
+        position: relative !important; 
+    }
+    
+    /* Fotoğrafları kutuya oturt */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) img {
+        border-radius: 8px !important;
+        width: 100% !important;
+        height: auto !important;
+        transition: 0.2s ease-in-out !important;
+    }
+
+    /* Üzerine gelince büyüme efekti */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) > div[data-testid="column"]:hover img {
+        transform: scale(1.1) !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+    }
+
+    /* GÖRÜNMEZ BUTON: Fotoğrafın üzerini şeffaf bir cam gibi kaplar */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) div[data-testid="stButton"],
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) button {
         position: absolute !important;
-        top: 0 !important; 
+        top: 0 !important;
         left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        width: 100% !important; 
+        width: 100% !important;
         height: 100% !important;
-        z-index: 999 !important;
-        margin: 0 !important; 
+        margin: 0 !important;
         padding: 0 !important;
+        z-index: 10 !important;
     }
 
-    div.gallery-target + div[data-testid="stHorizontalBlock"] .stButton button,
-    div.gallery-target + div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button {
-        position: absolute !important;
-        top: 0 !important; 
-        left: 0 !important;
-        width: 100% !important; 
-        height: 100% !important;
-        opacity: 0 !important; /* TAMAMEN GÖRÜNMEZ */
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) button {
+        opacity: 0 !important; /* Tamamen görünmez yapar */
         background: transparent !important;
         border: none !important;
         cursor: pointer !important;
-        padding: 0 !important;
         color: transparent !important;
-    }
-
-    /* Mobilde yan yana tutmaya zorla */
-    @media (max-width: 768px) {
-        div.gallery-target + div[data-testid="stHorizontalBlock"] {
-            flex-direction: row !important;
-        }
-        div.gallery-target + div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
-            min-width: 45px !important; 
-        }
     }
 
     /* ==========================================
@@ -181,10 +175,7 @@ st.markdown("""
       --line:      #EDE8DC;
     }
 
-    /* Sekme 2 İçindeki Özel Yapılar */
-    .compost-coach-wrapper {
-        font-family: 'Plus Jakarta Sans', sans-serif !important;
-    }
+    .compost-coach-wrapper { font-family: 'Plus Jakarta Sans', sans-serif !important; }
 
     .hero-card {
       background: linear-gradient(140deg, var(--cream) 0%, var(--mustard) 100%);
@@ -499,13 +490,11 @@ with tab1:
     if mevcut_fotolar:
         st.markdown("<p style='text-align:center; font-size:13px; font-weight:bold; color:#A8C9B4; margin-bottom:5px;'>Hızlı Taramak İçin Fotoğraflardan Birine Tıklayın:</p>", unsafe_allow_html=True)
         
-        st.markdown('<div class="gallery-target"></div>', unsafe_allow_html=True)
         galeri_kolonlari = st.columns(len(mevcut_fotolar))
         
         for i, ornek_foto in enumerate(mevcut_fotolar):
             with galeri_kolonlari[i]:
                 st.image(ornek_foto, use_container_width=True)
-                # Görünmez buton - CSS ile fotoğrafın üzerini tamamen kaplar
                 if st.button(" ", key=f"sec_{ornek_foto}", use_container_width=True):
                     st.session_state.secilen_ornek = ornek_foto
                     
