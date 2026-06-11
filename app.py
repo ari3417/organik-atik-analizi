@@ -26,7 +26,7 @@ def image_to_base64(img):
 
 # --- ÖZEL CSS (Tüm Proje İçin Birleşik) ---
 st.markdown("""
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="[https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap](https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap)" rel="stylesheet">
 <style>
     /* ==========================================
        MEVCUT PROJE CSS (SEKME 1 VE 3 İÇİN)
@@ -256,21 +256,21 @@ model = load_model()
 # ==========================================
 # KOMPOST KOÇU YARDIMCI FONKSİYONLAR (SEKME 2 İÇİN)
 # ==========================================
-HERO_SVG = """<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:44px;height:44px;margin-bottom:8px">
+HERO_SVG = """<svg viewBox="0 0 44 44" fill="none" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" style="width:44px;height:44px;margin-bottom:8px">
   <circle cx="22" cy="22" r="20" fill="#FFD580" opacity="0.5"/>
   <path d="M22 34 L22 20" stroke="#5A8A40" stroke-width="2" stroke-linecap="round"/>
   <path d="M22 24 Q16 20 14 14 Q20 13 24 18 Q26 20 22 24Z" fill="#7ABD5A"/>
   <path d="M22 28 Q28 24 30 18 Q24 16 20 22 Q19 24 22 28Z" fill="#5A8A40"/>
 </svg>"""
-SPROUT_SVG = """<svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:30px;height:30px">
+SPROUT_SVG = """<svg viewBox="0 0 44 44" fill="none" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" style="width:30px;height:30px">
   <path d="M22 34 L22 19" stroke="#5A8A40" stroke-width="2.2" stroke-linecap="round"/>
   <path d="M22 22 Q15 18 14 11 Q21 11 25 17 Q26 20 22 22Z" fill="#7ABD5A"/>
   <path d="M22 27 Q29 22 31 15 Q24 14 20 21 Q19 24 22 27Z" fill="#5A8A40"/>
 </svg>"""
-MOISTURE_SVG = """<svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;margin-bottom:6px">
+MOISTURE_SVG = """<svg viewBox="0 0 26 26" fill="none" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" style="width:26px;height:26px;margin-bottom:6px">
   <path d="M13 4 Q10 8 8 12 Q6 16 8 20 Q10 24 13 24 Q16 24 18 20 Q20 16 18 12 Q16 8 13 4Z" fill="#B2D4F4" stroke="#464CE6" stroke-width="1.2"/>
 </svg>"""
-BALANCE_SVG = """<svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:26px;height:26px;margin-bottom:6px">
+BALANCE_SVG = """<svg viewBox="0 0 26 26" fill="none" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" style="width:26px;height:26px;margin-bottom:6px">
   <rect x="4" y="14" width="7" height="8" rx="2" fill="#B8CCB6" stroke="#5A8A40" stroke-width="1.2"/>
   <rect x="15" y="10" width="7" height="12" rx="2" fill="#FFD580" stroke="#C8A020" stroke-width="1.2"/>
   <path d="M2 22 L24 22" stroke="#ccc" stroke-width="1"/>
@@ -372,8 +372,11 @@ def analyze_compost_image(img, c_type, start, age, stage, last_t, days_since, da
     {{ "health_score": 0, "moisture": "Kuru|Optimal|Islak", "balance": "Karbon Fazla|Dengeli|Azot Fazla", "ready_in": "2-3 ay", "current_status": "Tr sentence", "moisture_check": "Tr sentence", "carbon_nitrogen_note": "Tr sentence", "issue": "Short tr issue", "detected_problems": ["Tr bullet 1"], "recommendations": ["Tr action 1"], "coach_note": "Tr note" }}
     Data: Type:{c_type}, Age:{age} days, Stage:{stage}, Next turn in:{days_until} days, Odor:{odor}"""
     resp = model.generate_content([prompt, img])
-    cleaned = resp.text.strip().replace("```json", "").replace("
-```", "").strip()
+    
+    # Markdown kopyalama hatalarını önlemek için backtick'leri (```) güvenli yoldan siliyoruz
+    b_tick = "`" * 3
+    cleaned = resp.text.strip().replace(b_tick + "json", "").replace(b_tick, "").strip()
+    
     match = re.search(r"\{.*\}", cleaned, flags=re.DOTALL)
     if match: cleaned = match.group(0)
     return normalize_ai_data(json.loads(cleaned))
