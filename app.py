@@ -113,8 +113,8 @@ st.markdown("""
     }
 
     div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) > div[data-testid="column"] {
-        min-width: 65px !important;
-        max-width: 80px !important;
+        min-width: 75px !important;
+        max-width: 95px !important;
         flex: 0 0 auto !important;
     }
 
@@ -135,77 +135,43 @@ st.markdown("""
         padding: 0 !important;
     }
 
+    /* Tüm galeri butonları — açık gri */
     div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) button {
-        font-size: 9px !important;
-        padding: 2px 0 !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        padding: 4px 0 !important;
         min-height: 0 !important;
         height: auto !important;
-        line-height: 1.2 !important;
-        background-color: #A8C9B4 !important;
-        color: white !important;
+        line-height: 1.3 !important;
+        white-space: nowrap !important;
+        background-color: #D5D5D5 !important;
+        color: #666 !important;
         border: none !important;
-        border-radius: 4px !important;
+        border-radius: 6px !important;
         cursor: pointer !important;
     }
 
     div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) button:hover {
-        background-color: #7BAA8E !important;
+        background-color: #BDBDBD !important;
     }
 
+    /* Seçili buton — koyu gri */
+    [class*="st-key-galeri_secili_"] button {
+        background-color: #4A4A4A !important;
+        color: white !important;
+    }
+
+    /* Mobil */
     @media (max-width: 768px) {
         div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) {
             gap: 5px !important;
         }
         div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) > div[data-testid="column"] {
-            min-width: 48px !important;
-            max-width: 56px !important;
+            min-width: 58px !important;
+            max-width: 68px !important;
         }
-    }
-
-    /* GÖRÜNMEZ BUTON: Container */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) div[data-testid="stButton"] {
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        z-index: 10 !important;
-        overflow: hidden !important;
-    }
-
-    /* GÖRÜNMEZ BUTON: <button> elementi */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) button {
-        position: absolute !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-        opacity: 0 !important;
-        background: transparent !important;
-        border: none !important;
-        cursor: pointer !important;
-        color: transparent !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        min-height: 0 !important;
-    }
-
-    /* Buton içindeki metin etiketini tamamen gizle */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) button p {
-        display: none !important;
-    }
-
-    /* ★ MOBİL: Tek sıra, daha küçük fotoğraflar */
-    @media (max-width: 768px) {
-        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) {
-            gap: 5px !important;
-            padding-bottom: 10px !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) > div[data-testid="column"] {
-            min-width: 48px !important;
-            max-width: 56px !important;
+        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) button {
+            font-size: 10px !important;
         }
     }
 
@@ -549,8 +515,11 @@ with tab1:
         
         for i, ornek_foto in enumerate(mevcut_fotolar):
             with galeri_kolonlari[i]:
-                st.image(ornek_foto, use_container_width=True)
-                st.button("Seç", key=f"sec_{ornek_foto}", on_click=secim_yap, args=(ornek_foto,), use_container_width=True)
+                is_secili = (st.session_state.secilen_ornek == ornek_foto)
+                wrapper_key = f"galeri_secili_{i}" if is_secili else f"galeri_{i}"
+                with st.container(key=wrapper_key):
+                    st.image(ornek_foto, use_container_width=True)
+                    st.button("Seç", key=f"sec_{ornek_foto}", on_click=secim_yap, args=(ornek_foto,), use_container_width=True)
                     
     st.markdown("<br>", unsafe_allow_html=True)
     # --- ÖRNEK FOTOĞRAF GALERİSİ BİTİŞİ ---
