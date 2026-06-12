@@ -96,14 +96,14 @@ st.markdown("""
     /* ==========================================
        HIZLI TEST GALERİSİ (TEK SIRA VE TAM TIKLANABİLİR)
        ========================================== */
-    
+
     div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) {
         flex-wrap: nowrap !important;
-        overflow-x: auto !important; 
+        overflow-x: auto !important;
         padding-bottom: 15px !important;
         gap: 8px !important;
     }
-    
+
     div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5))::-webkit-scrollbar {
         height: 6px;
     }
@@ -113,30 +113,53 @@ st.markdown("""
     }
 
     div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) > div[data-testid="column"] {
-        min-width: 65px !important; 
+        min-width: 65px !important;
         max-width: 80px !important;
         flex: 0 0 auto !important;
-        position: relative !important; 
     }
 
-    /* ★ Galeri içindeki resimlerde global stImage stilini sıfırla */
     div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) [data-testid="stImage"] {
         margin-bottom: 0px !important;
         position: static !important;
         z-index: auto !important;
     }
-    
+
     div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) img {
         border-radius: 8px !important;
         width: 100% !important;
         height: auto !important;
-        transition: 0.2s ease-in-out !important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) div[data-testid="stButton"] {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) button {
+        font-size: 9px !important;
+        padding: 2px 0 !important;
+        min-height: 0 !important;
+        height: auto !important;
+        line-height: 1.2 !important;
+        background-color: #A8C9B4 !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 4px !important;
         cursor: pointer !important;
     }
 
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) > div[data-testid="column"]:hover img {
-        transform: scale(1.1) !important;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) button:hover {
+        background-color: #7BAA8E !important;
+    }
+
+    @media (max-width: 768px) {
+        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) {
+            gap: 5px !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) > div[data-testid="column"] {
+            min-width: 48px !important;
+            max-width: 56px !important;
+        }
     }
 
     /* GÖRÜNMEZ BUTON: Container */
@@ -516,6 +539,9 @@ with tab1:
 
     mevcut_fotolar = [f for f in tum_ornek_fotolar if os.path.exists(f)]
 
+    def secim_yap(foto):
+        st.session_state.secilen_ornek = foto
+
     if mevcut_fotolar:
         st.markdown("<p style='text-align:center; font-size:13px; font-weight:bold; color:#A8C9B4; margin-bottom:5px;'>Hızlı Taramak İçin Fotoğraflardan Birine Tıklayın:</p>", unsafe_allow_html=True)
         
@@ -524,9 +550,7 @@ with tab1:
         for i, ornek_foto in enumerate(mevcut_fotolar):
             with galeri_kolonlari[i]:
                 st.image(ornek_foto, use_container_width=True)
-                if st.button(" ", key=f"sec_{ornek_foto}", use_container_width=True):
-                    st.session_state.secilen_ornek = ornek_foto
-                    st.rerun()
+                st.button("Seç", key=f"sec_{ornek_foto}", on_click=secim_yap, args=(ornek_foto,), use_container_width=True)
                     
     st.markdown("<br>", unsafe_allow_html=True)
     # --- ÖRNEK FOTOĞRAF GALERİSİ BİTİŞİ ---
