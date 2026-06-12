@@ -93,50 +93,56 @@ st.markdown("""
         margin-top: 10px; letter-spacing: 1px; font-family: sans-serif;
     }
 
-    /* ==========================================
-       HIZLI TEST GALERİSİ (TEK SIRA VE TAM TIKLANABİLİR)
+       /* ==========================================
+       HIZLI TEST GALERİSİ
        ========================================== */
 
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) {
+    /* Ana satır: HER EKRANDA tek sıra, yatay kaydırmalı */
+    .st-key-galeri_wrapper [data-testid="stHorizontalBlock"] {
+        flex-direction: row !important;
         flex-wrap: nowrap !important;
         overflow-x: auto !important;
         padding-bottom: 15px !important;
         gap: 8px !important;
+        -webkit-overflow-scrolling: touch !important;
     }
 
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5))::-webkit-scrollbar {
+    .st-key-galeri_wrapper [data-testid="stHorizontalBlock"]::-webkit-scrollbar {
         height: 6px;
     }
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5))::-webkit-scrollbar-thumb {
+    .st-key-galeri_wrapper [data-testid="stHorizontalBlock"]::-webkit-scrollbar-thumb {
         background-color: #A8C9B4;
         border-radius: 10px;
     }
 
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) > div[data-testid="column"] {
+    /* Kolonlar */
+    .st-key-galeri_wrapper [data-testid="column"] {
         min-width: 75px !important;
         max-width: 95px !important;
-        flex: 0 0 auto !important;
+        width: 75px !important;
+        flex: 0 0 75px !important;
     }
 
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) [data-testid="stImage"] {
+    /* stImage global stilini sıfırla */
+    .st-key-galeri_wrapper [data-testid="stImage"] {
         margin-bottom: 0px !important;
         position: static !important;
         z-index: auto !important;
     }
 
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) img {
+    .st-key-galeri_wrapper img {
         border-radius: 8px !important;
         width: 100% !important;
         height: auto !important;
     }
 
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) div[data-testid="stButton"] {
+    .st-key-galeri_wrapper div[data-testid="stButton"] {
         margin: 0 !important;
         padding: 0 !important;
     }
 
-    /* Tüm galeri butonları — açık gri */
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) button {
+    /* Butonlar: açık gri */
+    .st-key-galeri_wrapper button {
         font-size: 12px !important;
         font-weight: 600 !important;
         padding: 4px 0 !important;
@@ -151,45 +157,31 @@ st.markdown("""
         cursor: pointer !important;
     }
 
-    div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) button:hover {
+    .st-key-galeri_wrapper button:hover {
         background-color: #BDBDBD !important;
     }
 
-    /* Seçili buton — koyu gri */
+    /* Seçili buton: koyu gri */
     [class*="st-key-galeri_secili_"] button {
         background-color: #4A4A4A !important;
         color: white !important;
     }
 
     /* Mobil */
-    /* Mobil: Streamlit'in alt alta dizme davranışını zorla engelle */
     @media (max-width: 768px) {
-        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) {
+        .st-key-galeri_wrapper [data-testid="stHorizontalBlock"] {
+            gap: 5px !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
-            overflow-x: auto !important;
-            gap: 5px !important;
-            padding-bottom: 10px !important;
-            -webkit-overflow-scrolling: touch !important;
         }
-        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) > div[data-testid="column"] {
+        .st-key-galeri_wrapper [data-testid="column"] {
             min-width: 58px !important;
             max-width: 68px !important;
             width: 58px !important;
             flex: 0 0 58px !important;
         }
-        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) button {
+        .st-key-galeri_wrapper button {
             font-size: 10px !important;
-        }
-    }
-
-    /* Çok küçük ekranlar (eski/küçük telefonlar) */
-    @media (max-width: 480px) {
-        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) > div[data-testid="column"] {
-            min-width: 50px !important;
-            max-width: 58px !important;
-            width: 50px !important;
-            flex: 0 0 50px !important;
         }
     }
     /* ==========================================
@@ -528,15 +520,16 @@ with tab1:
     if mevcut_fotolar:
         st.markdown("<p style='text-align:center; font-size:13px; font-weight:bold; color:#A8C9B4; margin-bottom:5px;'>Hızlı Taramak İçin Fotoğraflardan Birine Tıklayın:</p>", unsafe_allow_html=True)
         
-        galeri_kolonlari = st.columns(len(mevcut_fotolar))
-        
-        for i, ornek_foto in enumerate(mevcut_fotolar):
-            with galeri_kolonlari[i]:
-                is_secili = (st.session_state.secilen_ornek == ornek_foto)
-                wrapper_key = f"galeri_secili_{i}" if is_secili else f"galeri_{i}"
-                with st.container(key=wrapper_key):
-                    st.image(ornek_foto, use_container_width=True)
-                    st.button("Seç", key=f"sec_{ornek_foto}", on_click=secim_yap, args=(ornek_foto,), use_container_width=True)
+        with st.container(key="galeri_wrapper"):
+            galeri_kolonlari = st.columns(len(mevcut_fotolar))
+            
+            for i, ornek_foto in enumerate(mevcut_fotolar):
+                with galeri_kolonlari[i]:
+                    is_secili = (st.session_state.secilen_ornek == ornek_foto)
+                    wrapper_key = f"galeri_secili_{i}" if is_secili else f"galeri_{i}"
+                    with st.container(key=wrapper_key):
+                        st.image(ornek_foto, use_container_width=True)
+                        st.button("Seç", key=f"sec_{ornek_foto}", on_click=secim_yap, args=(ornek_foto,), use_container_width=True)
                     
     st.markdown("<br>", unsafe_allow_html=True)
     # --- ÖRNEK FOTOĞRAF GALERİSİ BİTİŞİ ---
