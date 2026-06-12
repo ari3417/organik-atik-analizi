@@ -435,7 +435,6 @@ j_stage, j_pct = journey_progress(age_d, st.session_state.c_type, st.session_sta
 @st.dialog("📷 Kompostunu Analiz Et")
 def analysis_dialog():
     ufile = st.file_uploader("Fotoğraf yükle", type=["jpg", "png"])
-    if ufile: st.image(Image.open(ufile))
     c1, c2 = st.columns([3, 1])
     if c2.button("Kapat"): st.rerun()
     if c1.button("🔍 Analiz Et", type="primary"):
@@ -449,6 +448,7 @@ def analysis_dialog():
                 st.session_state.goal_sig = ""
                 st.rerun()
             except Exception as e: st.error(f"Hata: {e}")
+    if ufile: st.image(Image.open(ufile))
 
 @st.dialog("🌱 Kompost Bilgileri")
 def edit_dialog():
