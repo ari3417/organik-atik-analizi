@@ -443,20 +443,52 @@ j_stage, j_pct = journey_progress(age_d, st.session_state.c_type, st.session_sta
 @st.dialog("📷 Kompostunu Analiz Et")
 def analysis_dialog():
     ufile = st.file_uploader("Fotoğraf yükle", type=["jpg", "png"])
+    
+    # Örnek kompost fotoğrafları
+    kompost_ornekleri = [f for f in [
+        "kompost_1.jpg", "kompost_1.png", "kompost_2.jpg", "kompost_2.png",
+        "kompost_3.jpg", "kompost_3.png", "kompost_4.jpg", "kompost_4.png",
+        "kompost_5.jpg", "kompost_5.png"
+    ] if os.path.exists(f)]
+
+    def kompost_sec(foto):
+        st.session_state.kompost_secilen = foto
+
+    if kompost_ornekleri and not ufile:
+        st.markdown("<p style='text-align:center; font-size:12px; color:#999; margin:5px 0;'>veya örnek fotoğraflardan seçin:</p>", unsafe_allow_html=True)
+        kcols = st.columns(len(kompost_ornekleri))
+        for i, kfoto in enumerate(kompost_ornekleri):
+            with kcols[i]:
+                st.image(kfoto, use_container_width=True)
+                st.button("Seç", key=f"kompost_sec_{kfoto}", on_click=kompost_sec, args=(kfoto,), use_container_width=True)
+
     c1, c2 = st.columns([3, 1])
-    if c2.button("Kapat"): st.rerun()
+    if c2.button("Kapat"):
+        st.session_state.pop("kompost_secilen", None)
+        st.rerun()
     if c1.button("🔍 Analiz Et", type="primary"):
-        if not ufile: return st.warning("Fotoğraf yükleyin.")
+        analiz_img = None
+        if ufile:
+            analiz_img = Image.open(ufile)
+        elif st.session_state.get("kompost_secilen"):
+            analiz_img = Image.open(st.session_state.kompost_secilen)
+        if not analiz_img:
+            return st.warning("Fotoğraf yükleyin veya örnek seçin.")
         with st.spinner("Analiz ediliyor..."):
             try:
-                img = Image.open(ufile)
-                st.session_state.ai_data = analyze_compost_image(img, st.session_state.c_type, st.session_state.start_date, age_d, j_stage, st.session_state.last_turn, since_t, until_t, st.session_state.amount, st.session_state.odor)
-                st.session_state.ai_image = img.copy()
+                st.session_state.ai_data = analyze_compost_image(analiz_img, st.session_state.c_type, st.session_state.start_date, age_d, j_stage, st.session_state.last_turn, since_t, until_t, st.session_state.amount, st.session_state.odor)
+                st.session_state.ai_image = analiz_img.copy()
                 st.session_state.analysis_ready = True
                 st.session_state.goal_sig = ""
+                st.session_state.pop("kompost_secilen", None)
                 st.rerun()
             except Exception as e: st.error(f"Hata: {e}")
-    if ufile: st.image(Image.open(ufile))
+
+    # Önizleme
+    if ufile:
+        st.image(Image.open(ufile), width=350)
+    elif st.session_state.get("kompost_secilen"):
+        st.image(st.session_state.kompost_secilen, width=350)
 
 @st.dialog("🌱 Kompost Bilgileri")
 def edit_dialog():
