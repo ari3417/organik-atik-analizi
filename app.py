@@ -456,12 +456,12 @@ def analysis_dialog():
 
     if kompost_ornekleri and not ufile:
         st.markdown("<p style='text-align:center; font-size:12px; color:#999; margin:5px 0;'>veya örnek fotoğraflardan seçin:</p>", unsafe_allow_html=True)
-        kcols = st.columns(max(4, len(kompost_ornekleri)))
-        for i, kfoto in enumerate(kompost_ornekleri):
-            with kcols[i]:
+               for kfoto in kompost_ornekleri:
+            foto_col, btn_col = st.columns([1, 3])
+            with foto_col:
                 st.image(kfoto, use_container_width=True)
-                st.button("Seç", key=f"kompost_sec_{kfoto}", on_click=kompost_sec, args=(kfoto,), use_container_width=True)
-
+            with btn_col:
+                st.button("Seç", key=f"kompost_sec_{kfoto}", on_click=kompost_sec, args=(kfoto,))
     c1, c2 = st.columns([3, 1])
     if c2.button("Kapat"):
         st.session_state.pop("kompost_secilen", None)
