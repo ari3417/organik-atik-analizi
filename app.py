@@ -162,19 +162,36 @@ st.markdown("""
     }
 
     /* Mobil */
+    /* Mobil: Streamlit'in alt alta dizme davranışını zorla engelle */
     @media (max-width: 768px) {
         div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) {
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
             gap: 5px !important;
+            padding-bottom: 10px !important;
+            -webkit-overflow-scrolling: touch !important;
         }
         div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) > div[data-testid="column"] {
             min-width: 58px !important;
             max-width: 68px !important;
+            width: 58px !important;
+            flex: 0 0 58px !important;
         }
         div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) button {
             font-size: 10px !important;
         }
     }
 
+    /* Çok küçük ekranlar (eski/küçük telefonlar) */
+    @media (max-width: 480px) {
+        div[data-testid="stHorizontalBlock"]:has(> div[data-testid="column"]:nth-child(5)) > div[data-testid="column"] {
+            min-width: 50px !important;
+            max-width: 58px !important;
+            width: 50px !important;
+            flex: 0 0 50px !important;
+        }
+    }
     /* ==========================================
        YENİ EKLENEN CSS (SADECE SEKME 2 İÇİN)
        ========================================== */
