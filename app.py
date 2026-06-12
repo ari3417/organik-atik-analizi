@@ -456,7 +456,7 @@ def analysis_dialog():
 
     if kompost_ornekleri and not ufile:
         st.markdown("<p style='text-align:center; font-size:12px; color:#999; margin:5px 0;'>veya örnek fotoğraflardan seçin:</p>", unsafe_allow_html=True)
-        kcols = st.columns(len(kompost_ornekleri))
+        kcols = st.columns(max(4, len(kompost_ornekleri)))
         for i, kfoto in enumerate(kompost_ornekleri):
             with kcols[i]:
                 st.image(kfoto, use_container_width=True)
