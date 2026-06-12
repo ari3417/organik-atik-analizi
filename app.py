@@ -456,7 +456,8 @@ def analysis_dialog():
 
     if kompost_ornekleri and not ufile:
         st.markdown("<p style='text-align:center; font-size:12px; color:#999; margin:5px 0;'>veya örnek fotoğraflardan seçin:</p>", unsafe_allow_html=True)
-               for kfoto in kompost_ornekleri:
+        
+        for kfoto in kompost_ornekleri:
             foto_col, btn_col = st.columns([1, 3])
             with foto_col:
                 st.image(kfoto, use_container_width=True)
