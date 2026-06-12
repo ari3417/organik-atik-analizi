@@ -93,6 +93,12 @@ st.markdown("""
         margin-top: 10px; letter-spacing: 1px; font-family: sans-serif;
     }
 
+        /* Dialog paneli fotoğrafla birlikte büyüsün */
+    [data-testid="stDialog"] > div {
+        max-height: 85vh !important;
+        overflow-y: auto !important;
+    }
+
        /* ==========================================
        HIZLI TEST GALERİSİ
        ========================================== */
