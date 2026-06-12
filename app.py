@@ -1011,6 +1011,58 @@ with tab2:
             st.rerun()
 
     st.markdown('</div>', unsafe_allow_html=True)
+    # 🎉 Kutlama animasyonu: Tüm hedefler tamamlandığında
+    if g_done == g_tot and g_tot > 0:
+        st.markdown("""
+        <style>
+        @keyframes kutlama-yuksel {
+            0% { 
+                transform: translateY(0) rotate(0deg) scale(1); 
+                opacity: 1; 
+            }
+            80% { opacity: 1; }
+            100% { 
+                transform: translateY(-100vh) rotate(360deg) scale(0.3); 
+                opacity: 0; 
+            }
+        }
+        .kutlama-wrapper {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 99999;
+            overflow: hidden;
+        }
+        .kutlama-wrapper span {
+            position: fixed;
+            bottom: -60px;
+            animation: kutlama-yuksel ease-in-out forwards;
+        }
+        </style>
+        <div class="kutlama-wrapper">
+            <span style="left:3%;  animation-duration:4.0s; animation-delay:0.0s; font-size:40px;">🎈</span>
+            <span style="left:10%; animation-duration:3.5s; animation-delay:0.2s; font-size:24px;">❤️</span>
+            <span style="left:18%; animation-duration:4.5s; animation-delay:0.5s; font-size:44px;">🟠</span>
+            <span style="left:25%; animation-duration:3.8s; animation-delay:0.3s; font-size:20px;">💛</span>
+            <span style="left:33%; animation-duration:4.2s; animation-delay:0.7s; font-size:38px;">🎈</span>
+            <span style="left:40%; animation-duration:3.3s; animation-delay:0.1s; font-size:22px;">💜</span>
+            <span style="left:48%; animation-duration:4.8s; animation-delay:0.6s; font-size:42px;">🟣</span>
+            <span style="left:55%; animation-duration:3.6s; animation-delay:0.4s; font-size:28px;">🧡</span>
+            <span style="left:63%; animation-duration:4.1s; animation-delay:0.8s; font-size:36px;">🎈</span>
+            <span style="left:70%; animation-duration:3.9s; animation-delay:0.2s; font-size:24px;">💚</span>
+            <span style="left:78%; animation-duration:5.0s; animation-delay:1.0s; font-size:30px;">❤️</span>
+            <span style="left:85%; animation-duration:4.3s; animation-delay:1.2s; font-size:46px;">🟡</span>
+            <span style="left:92%; animation-duration:3.7s; animation-delay:0.9s; font-size:26px;">💜</span>
+            <span style="left:7%;  animation-duration:4.6s; animation-delay:1.1s; font-size:34px;">🟢</span>
+            <span style="left:35%; animation-duration:3.4s; animation-delay:1.4s; font-size:20px;">💛</span>
+            <span style="left:52%; animation-duration:4.4s; animation-delay:1.3s; font-size:40px;">🎈</span>
+            <span style="left:68%; animation-duration:3.2s; animation-delay:0.5s; font-size:22px;">🧡</span>
+            <span style="left:80%; animation-duration:4.7s; animation-delay:1.5s; font-size:38px;">🟠</span>
+            <span style="left:15%; animation-duration:5.2s; animation-delay:0.8s; font-size:18px;">💚</span>
+            <span style="left:45%; animation-duration:3.5s; animation-delay:1.6s; font-size:32px;">🎈</span>
+        </div>
+        """, unsafe_allow_html=True)    
 
 # ==========================================
 # SEKME 3: EĞİTİM DESTEĞİ
