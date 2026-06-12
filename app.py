@@ -535,7 +535,7 @@ with tab1:
     </div>
     """, unsafe_allow_html=True)
     
-    uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"], key="scanner", label_visibility="collapsed")
+    uploaded_file = st.file_uploader("", type=["jpg", "jpeg", "png"], key=f"scanner_{st.session_state.get('uploader_key', 0)}", label_visibility="collapsed")
     
     st.markdown("""
     <div style="font-size: 14px; color: #555; margin-top: 15px; margin-bottom: 10px; line-height: 1.4; text-align: center;">
@@ -557,6 +557,7 @@ with tab1:
 
     def secim_yap(foto):
         st.session_state.secilen_ornek = foto
+        st.session_state.uploader_key = st.session_state.get("uploader_key", 0) + 1
 
     if mevcut_fotolar:
         st.markdown("<p style='text-align:center; font-size:13px; font-weight:bold; color:#A8C9B4; margin-bottom:5px;'>Hızlı Taramak İçin Fotoğraflardan Birine Tıklayın:</p>", unsafe_allow_html=True)
